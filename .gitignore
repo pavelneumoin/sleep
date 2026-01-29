@@ -1,0 +1,14 @@
+# Конфиденциальные файлы - НЕ загружать на GitHub!
+server/
+*.env
+config.js
+secrets.js
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+*.log

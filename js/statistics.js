@@ -1,155 +1,170 @@
-/* ===================================================
-   СоноТрекер - Логика статистики
-   =================================================== */
+/**
+ * СоноТрекер - Статистика
+ * Отображение данных и графиков
+ */
 
 document.addEventListener('DOMContentLoaded', function () {
-    const sleepHistory = JSON.parse(localStorage.getItem('sleepHistory')) || [];
-    const historyBody = document.getElementById('sleep-history-body');
-    const noHistoryMessage = document.getElementById('no-history-message');
+    loadStatistics();
+    loadHistory();
+});
 
-    if (!historyBody) return; // Выходим, если не на странице статистики
+// Загрузка статистики
+function loadStatistics() {
+    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
 
-    if (sleepHistory.length === 0) {
-        noHistoryMessage.style.display = 'block';
+    if (history.length === 0) {
         return;
     }
 
-    noHistoryMessage.style.display = 'none';
+    // Берём записи за последнюю неделю
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekRecords = history.filter(r => new Date(r.date) >= weekAgo);
 
-    // Сортируем записи по дате (от новых к старым)
-    sleepHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (weekRecords.length > 0) {
+        // Средняя продолжительность
+        const avgDuration = weekRecords.reduce((sum, r) => sum + parseFloat(r.duration), 0) / weekRecords.length;
+        document.getElementById('avg-sleep').textContent = avgDuration.toFixed(1) + ' ч';
 
-    // Отображаем последние 10 записей
-    const recentHistory = sleepHistory.slice(0, 10);
+        // Средняя эффективность
+        const avgEfficiency = weekRecords.reduce((sum, r) => sum + r.efficiency, 0) / weekRecords.length;
+        document.getElementById('avg-efficiency').textContent = Math.round(avgEfficiency) + '%';
 
-    recentHistory.forEach(record => {
-        const row = document.createElement('tr');
+        // Среднее качество
+        const avgQuality = weekRecords.reduce((sum, r) => sum + r.quality, 0) / weekRecords.length;
+        document.getElementById('avg-quality').textContent = avgQuality.toFixed(1);
 
-        // Форматируем дату
-        const date = new Date(record.date);
-        const formattedDate = date.toLocaleDateString('ru-RU');
+        // Регулярность (сколько дней из 7 есть записи)
+        const consistency = Math.round((weekRecords.length / 7) * 100);
+        document.getElementById('consistency').textContent = consistency + '%';
 
-        // Определяем качество сна
-        let qualityText, qualityClass;
-        if (record.quality >= 4.5) {
-            qualityText = 'Отлично';
-            qualityClass = 'quality-excellent';
-        } else if (record.quality >= 3.5) {
-            qualityText = 'Хорошо';
-            qualityClass = 'quality-good';
-        } else if (record.quality >= 2.5) {
-            qualityText = 'Средне';
-            qualityClass = 'quality-average';
-        } else if (record.quality >= 1.5) {
-            qualityText = 'Плохо';
-            qualityClass = 'quality-poor';
-        } else {
-            qualityText = 'Очень плохо';
-            qualityClass = 'quality-bad';
-        }
+        // Строим графики
+        buildDurationChart(weekRecords);
+        buildQualityChart(weekRecords);
+    }
+}
 
-        row.innerHTML = `
-            <td>${formattedDate}</td>
-            <td>${record.sleepTime}</td>
-            <td>${record.wakeTime}</td>
-            <td>${record.duration}</td>
-            <td><span class="quality-badge ${qualityClass}">${qualityText}</span></td>
-            <td>${record.efficiency}%</td>
-        `;
+// График продолжительности сна
+function buildDurationChart(records) {
+    const container = document.getElementById('duration-chart');
+    if (!container) return;
 
-        historyBody.appendChild(row);
+    const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    const maxHeight = 200;
+    const maxHours = 12;
+
+    // Группируем по дням недели
+    const dayData = {};
+    records.forEach(r => {
+        const date = new Date(r.date);
+        const dayIndex = (date.getDay() + 6) % 7; // Понедельник = 0
+        dayData[dayIndex] = parseFloat(r.duration);
     });
 
-    // Обновляем статистику
-    updateStatistics(sleepHistory);
+    let chartHTML = '';
+    for (let i = 0; i < 7; i++) {
+        const hours = dayData[i] || 0;
+        const height = (hours / maxHours) * maxHeight;
+        const color = hours >= 9 ? '#7bed9f' : hours >= 7 ? '#fed330' : '#f8a5c2';
 
-    // Создаем диаграммы
-    createCharts(sleepHistory);
-});
-
-function updateStatistics(history) {
-    if (history.length === 0) return;
-
-    // Средняя продолжительность сна
-    const totalDuration = history.reduce((sum, record) => {
-        const [hours, minutes] = record.duration.split(':').map(Number);
-        return sum + hours + minutes / 60;
-    }, 0);
-    const avgDuration = (totalDuration / history.length).toFixed(1);
-    document.getElementById('avg-sleep').textContent = `${avgDuration} ч`;
-
-    // Средняя эффективность
-    const totalEfficiency = history.reduce((sum, record) => sum + parseFloat(record.efficiency), 0);
-    const avgEfficiency = (totalEfficiency / history.length).toFixed(0);
-    document.getElementById('avg-efficiency').textContent = `${avgEfficiency}%`;
-
-    // Среднее качество
-    const totalQuality = history.reduce((sum, record) => sum + parseInt(record.quality), 0);
-    const avgQuality = (totalQuality / history.length).toFixed(1);
-    document.getElementById('avg-quality').textContent = avgQuality;
-
-    // Регулярность (процент дней с продолжительностью 7-9 часов)
-    const regularDays = history.filter(record => {
-        const [hours] = record.duration.split(':').map(Number);
-        return hours >= 7 && hours <= 9;
-    }).length;
-    const consistency = ((regularDays / history.length) * 100).toFixed(0);
-    document.getElementById('consistency').textContent = `${consistency}%`;
-}
-
-function createCharts(history) {
-    if (history.length === 0) return;
-
-    // Берем последние 7 записей
-    const recentHistory = history.slice(0, 7).reverse();
-
-    // Диаграмма продолжительности сна
-    const durationChart = document.getElementById('duration-chart');
-    if (durationChart) {
-        durationChart.innerHTML = '';
-
-        recentHistory.forEach(record => {
-            const [hours, minutes] = record.duration.split(':').map(Number);
-            const durationInHours = hours + minutes / 60;
-
-            const bar = document.createElement('div');
-            bar.className = 'chart-bar';
-            bar.style.height = `${(durationInHours / 10) * 100}%`;
-
-            const label = document.createElement('div');
-            label.className = 'chart-label';
-            label.textContent = new Date(record.date).toLocaleDateString('ru-RU', { weekday: 'short' });
-
-            bar.appendChild(label);
-            durationChart.appendChild(bar);
-        });
+        chartHTML += `
+            <div class="chart-bar" style="height: ${height}px; background: linear-gradient(180deg, ${color}, #9b7ed9);">
+                <span class="chart-label">${days[i]}</span>
+            </div>
+        `;
     }
 
-    // Диаграмма качества сна
-    const qualityChart = document.getElementById('quality-chart');
-    if (qualityChart) {
-        qualityChart.innerHTML = '';
-
-        recentHistory.forEach(record => {
-            const bar = document.createElement('div');
-            bar.className = 'chart-bar';
-            bar.style.height = `${(record.quality / 5) * 100}%`;
-            bar.style.backgroundColor = getQualityColor(record.quality);
-
-            const label = document.createElement('div');
-            label.className = 'chart-label';
-            label.textContent = new Date(record.date).toLocaleDateString('ru-RU', { weekday: 'short' });
-
-            bar.appendChild(label);
-            qualityChart.appendChild(bar);
-        });
-    }
+    container.innerHTML = chartHTML || '<div class="no-data">Нет данных за эту неделю</div>';
 }
 
-function getQualityColor(quality) {
-    if (quality >= 4.5) return '#27ae60';
-    if (quality >= 3.5) return '#3498db';
-    if (quality >= 2.5) return '#f1c40f';
-    if (quality >= 1.5) return '#e67e22';
-    return '#e74c3c';
+// График качества сна
+function buildQualityChart(records) {
+    const container = document.getElementById('quality-chart');
+    if (!container) return;
+
+    const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    const maxHeight = 200;
+
+    // Группируем по дням недели
+    const dayData = {};
+    records.forEach(r => {
+        const date = new Date(r.date);
+        const dayIndex = (date.getDay() + 6) % 7;
+        dayData[dayIndex] = r.quality;
+    });
+
+    let chartHTML = '';
+    for (let i = 0; i < 7; i++) {
+        const quality = dayData[i] || 0;
+        const height = (quality / 5) * maxHeight;
+        const colors = {
+            5: '#7bed9f',
+            4: '#7ec8e3',
+            3: '#fed330',
+            2: '#f8a5c2',
+            1: '#ff7675'
+        };
+        const color = colors[quality] || '#e8e0f0';
+
+        chartHTML += `
+            <div class="chart-bar" style="height: ${height}px; background: linear-gradient(180deg, ${color}, #9b7ed9);">
+                <span class="chart-label">${days[i]}</span>
+            </div>
+        `;
+    }
+
+    container.innerHTML = chartHTML || '<div class="no-data">Нет данных за эту неделю</div>';
+}
+
+// Загрузка истории
+function loadHistory() {
+    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+    const tbody = document.getElementById('sleep-history-body');
+    const noDataMessage = document.getElementById('no-history-message');
+
+    if (!tbody) return;
+
+    if (history.length === 0) {
+        if (noDataMessage) noDataMessage.style.display = 'block';
+        return;
+    }
+
+    if (noDataMessage) noDataMessage.style.display = 'none';
+
+    const qualityEmojis = {
+        5: '😊 Супер!',
+        4: '🙂 Хорошо',
+        3: '😐 Нормально',
+        2: '😕 Не очень',
+        1: '😴 Плохо'
+    };
+
+    const qualityClasses = {
+        5: 'quality-excellent',
+        4: 'quality-good',
+        3: 'quality-average',
+        2: 'quality-poor',
+        1: 'quality-bad'
+    };
+
+    let html = '';
+    history.slice(0, 10).forEach(record => {
+        const date = new Date(record.date);
+        const dateStr = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+        const hours = Math.floor(parseFloat(record.duration));
+        const minutes = Math.round((parseFloat(record.duration) - hours) * 60);
+
+        html += `
+            <tr>
+                <td>${dateStr}</td>
+                <td>${record.sleepTime}</td>
+                <td>${record.wakeTime}</td>
+                <td>${hours}ч ${minutes}м</td>
+                <td><span class="quality-badge ${qualityClasses[record.quality]}">${qualityEmojis[record.quality]}</span></td>
+                <td>${record.efficiency}%</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
 }

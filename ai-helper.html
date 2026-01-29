@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спроси у Облачка - СоноТрекер 🤖</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Дополнительные стили для страницы ИИ */
+        .ai-chat-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(155, 126, 217, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f5f0ff;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .message-cloud .message-avatar {
+            background: linear-gradient(135deg, #9b7ed9, #7ec8e3);
+            padding: 5px;
+        }
+
+        .message-user .message-avatar {
+            background: linear-gradient(135deg, #f8a5c2, #fed330);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .message-content {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            max-width: 80%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-cloud .message-content {
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-user {
+            flex-direction: row-reverse;
+        }
+
+        .message-user .message-content {
+            background: linear-gradient(135deg, #9b7ed9, #f8a5c2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 3px solid #e8e0f0;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #9b7ed9;
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #9b7ed9, #f8a5c2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(155, 126, 217, 0.4);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 1rem;
+        }
+
+        .typing-dot {
+            width: 10px;
+            height: 10px;
+            background: #9b7ed9;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ai-feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 3px solid #e8e0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ai-feature-card:hover {
+            border-color: #9b7ed9;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(155, 126, 217, 0.2);
+        }
+
+        .ai-feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-feature-card h3 {
+            color: #9b7ed9;
+            margin-bottom: 0.5rem;
+        }
+
+        .story-generator,
+        .dream-interpreter {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(155, 126, 217, 0.2);
+        }
+
+        .story-output,
+        .dream-output {
+            background: linear-gradient(135deg, #f5f0ff, #fff0f5);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            line-height: 1.8;
+            display: none;
+        }
+
+        .story-output.active,
+        .dream-output.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .ai-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .ai-online {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .ai-offline {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+
+        .user-name-input {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .user-name-input label {
+            font-weight: 700;
+            color: #4a3f5c;
+        }
+
+        .user-name-input input {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e8e0f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 200px;
+        }
+
+        .theme-select {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e8e0f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/mascot.png" alt="Облачко" class="logo-icon">
+                    СоноТрекер
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">🏠 Главная</a></li>
+                        <li><a href="sleep-phases.html">🌙 Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">💡 Советы</a></li>
+                        <li><a href="sleep-statistics.html">📊 Статистика</a></li>
+                        <li><a href="ai-helper.html">🤖 Облачко</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="page-header">
+            <img src="images/mascot.png" alt="Сонное облачко" class="mascot mascot-float">
+            <h1>Привет! Я Соня — твоё облачко! 🤖</h1>
+            <p>Я умею отвечать на вопросы о сне, рассказывать сказки и объяснять сны!</p>
+            <div id="ai-status" class="ai-status ai-offline">🔄 Проверяю связь...</div>
+        </section>
+
+        <div class="ai-features">
+            <div class="ai-feature-card" onclick="showSection('chat')">
+                <div class="ai-feature-icon">💬</div>
+                <h3>Спроси у меня!</h3>
+                <p>Задай любой вопрос о сне, и я отвечу!</p>
+            </div>
+
+            <div class="ai-feature-card" onclick="showSection('story')">
+                <div class="ai-feature-icon">📖</div>
+                <h3>Сказка на ночь</h3>
+                <p>Я придумаю для тебя волшебную сказку!</p>
+            </div>
+
+            <div class="ai-feature-card" onclick="showSection('dream')">
+                <div class="ai-feature-icon">🔮</div>
+                <h3>Что значит мой сон?</h3>
+                <p>Расскажи мне свой сон, и я объясню!</p>
+            </div>
+        </div>
+
+        <!-- Чат с облачком -->
+        <section id="chat-section" class="ai-chat-container">
+            <h2>💬 Спроси у Облачка</h2>
+            <p>Напиши свой вопрос о сне, и я постараюсь помочь!</p>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message message-cloud">
+                    <img src="images/mascot.png" alt="Соня" class="message-avatar">
+                    <div class="message-content">
+                        Привет! 👋 Я Соня — твоё сонное облачко! Спроси меня что-нибудь о сне, и я постараюсь помочь! 🌙
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Напиши свой вопрос..."
+                    onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="chat-send" onclick="sendMessage()" id="send-btn">Отправить ✨</button>
+            </div>
+        </section>
+
+        <!-- Генератор сказок -->
+        <section id="story-section" class="story-generator" style="display: none;">
+            <h2>📖 Сказка на ночь</h2>
+            <p>Я придумаю специальную сказку только для тебя!</p>
+
+            <div class="user-name-input">
+                <label for="child-name">👤 Твоё имя:</label>
+                <input type="text" id="child-name" placeholder="Как тебя зовут?">
+
+                <label for="story-theme">🎨 Тема сказки:</label>
+                <select id="story-theme" class="theme-select">
+                    <option value="волшебный сон">🌙 Волшебный сон</option>
+                    <option value="путешествие по облакам">☁️ Путешествие по облакам</option>
+                    <option value="звёздная ночь">⭐ Звёздная ночь</option>
+                    <option value="лесные друзья">🌲 Лесные друзья</option>
+                    <option value="морское приключение">🌊 Морское приключение</option>
+                </select>
+
+                <button class="chat-send" onclick="generateStory()" id="story-btn">Создать сказку! 📖</button>
+            </div>
+
+            <div id="story-output" class="story-output"></div>
+        </section>
+
+        <!-- Толкование снов -->
+        <section id="dream-section" class="dream-interpreter" style="display: none;">
+            <h2>🔮 Что значит твой сон?</h2>
+            <p>Расскажи мне свой сон, и я объясню, что он может означать!</p>
+
+            <div class="chat-input-container" style="margin-bottom: 1rem;">
+                <input type="text" id="dream-input" class="chat-input" placeholder="Опиши свой сон..."
+                    onkeypress="if(event.key==='Enter') interpretDream()">
+                <button class="chat-send" onclick="interpretDream()" id="dream-btn">Узнать! 🔮</button>
+            </div>
+
+            <div id="dream-output" class="dream-output"></div>
+        </section>
+
+        <a href="index.html" class="back-link">Вернуться домой</a>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🌙 СоноТрекер</h3>
+                    <p>Твой друг для здорового сна с ИИ-помощником!</p>
+                </div>
+                <div class="footer-section">
+                    <h3>📍 Страницы</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="sleep-phases.html">Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">Советы</a></li>
+                        <li><a href="sleep-statistics.html">Статистика</a></li>
+                        <li><a href="ai-helper.html">Облачко</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>✨ Технологии</h3>
+                    <p>Работает на YandexGPT</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>🌙 СоноТрекер © 2026 • Сладких снов! 💤</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/ai-helper.js"></script>
+    <script>
+        // Показать нужную секцию
+        function showSection(section) {
+            document.getElementById('chat-section').style.display = section === 'chat' ? 'block' : 'none';
+            document.getElementById('story-section').style.display = section === 'story' ? 'block' : 'none';
+            document.getElementById('dream-section').style.display = section === 'dream' ? 'block' : 'none';
+        }
+
+        // Отправка сообщения в чат
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+            const sendBtn = document.getElementById('send-btn');
+
+            // Добавляем сообщение пользователя
+            messagesContainer.innerHTML += `
+                <div class="message message-user">
+                    <div class="message-avatar">👧</div>
+                    <div class="message-content">${message}</div>
+                </div>
+            `;
+
+            // Показываем индикатор набора
+            messagesContainer.innerHTML += `
+                <div class="message message-cloud" id="typing-indicator">
+                    <img src="images/mascot.png" alt="Соня" class="message-avatar">
+                    <div class="message-content">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            input.value = '';
+            sendBtn.disabled = true;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Получаем ответ от ИИ
+            const response = await window.SonoAI.chat(message);
+
+            // Убираем индикатор
+            document.getElementById('typing-indicator').remove();
+
+            // Добавляем ответ облачка
+            messagesContainer.innerHTML += `
+                <div class="message message-cloud">
+                    <img src="images/mascot.png" alt="Соня" class="message-avatar">
+                    <div class="message-content">${response}</div>
+                </div>
+            `;
+
+            sendBtn.disabled = false;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Генерация сказки
+        async function generateStory() {
+            const name = document.getElementById('child-name').value || 'малыш';
+            const theme = document.getElementById('story-theme').value;
+            const output = document.getElementById('story-output');
+            const btn = document.getElementById('story-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Придумываю... ✨';
+            output.classList.remove('active');
+            output.innerHTML = '';
+
+            const story = await window.SonoAI.story(name, theme);
+
+            output.innerHTML = story.replace(/\n/g, '<br>');
+            output.classList.add('active');
+
+            btn.disabled = false;
+            btn.textContent = 'Создать сказку! 📖';
+
+            // Сохраняем имя
+            localStorage.setItem('userName', name);
+        }
+
+        // Толкование сна
+        async function interpretDream() {
+            const dream = document.getElementById('dream-input').value.trim();
+            if (!dream) return;
+
+            const output = document.getElementById('dream-output');
+            const btn = document.getElementById('dream-btn');
+
+            btn.disabled = true;
+            btn.textContent = 'Думаю... 🔮';
+            output.classList.remove('active');
+
+            const interpretation = await window.SonoAI.dream(dream);
+
+            output.innerHTML = interpretation;
+            output.classList.add('active');
+
+            btn.disabled = false;
+            btn.textContent = 'Узнать! 🔮';
+            document.getElementById('dream-input').value = '';
+        }
+
+        // Загрузка сохранённого имени
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('userName');
+            if (savedName) {
+                document.getElementById('child-name').value = savedName;
+            }
+        });
+    </script>
+</body>
+
+</html>

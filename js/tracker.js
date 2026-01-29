@@ -1,74 +1,180 @@
-/* ===================================================
-   СоноТрекер - Логика трекера сна
-   =================================================== */
+/**
+ * СоноТрекер - Трекер сна
+ * Сохранение и анализ данных о сне
+ */
 
+// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', function () {
-    const calculateButton = document.getElementById('calculate-sleep');
-
-    if (calculateButton) {
-        calculateButton.addEventListener('click', calculateSleep);
-    }
+    initTracker();
+    loadUserData();
 });
 
+// Инициализация трекера
+function initTracker() {
+    const calculateBtn = document.getElementById('calculate-sleep');
+    if (calculateBtn) {
+        calculateBtn.addEventListener('click', calculateSleep);
+    }
+
+    // Загружаем последние значения
+    const lastSleep = localStorage.getItem('lastSleepTime');
+    const lastWake = localStorage.getItem('lastWakeTime');
+
+    if (lastSleep) {
+        document.getElementById('sleep-time').value = lastSleep;
+    }
+    if (lastWake) {
+        document.getElementById('wake-time').value = lastWake;
+    }
+}
+
+// Загрузка данных пользователя
+function loadUserData() {
+    const userName = localStorage.getItem('userName');
+    const userNameDisplay = document.getElementById('user-name-display');
+
+    if (userName && userNameDisplay) {
+        userNameDisplay.textContent = `Привет, ${userName}! 👋`;
+    }
+}
+
+// Расчет сна
 function calculateSleep() {
     const sleepTime = document.getElementById('sleep-time').value;
     const wakeTime = document.getElementById('wake-time').value;
     const quality = document.getElementById('sleep-quality').value;
+    const notes = document.getElementById('sleep-notes').value;
 
     if (!sleepTime || !wakeTime) {
-        alert('Пожалуйста, введите время отхода ко сну и пробуждения');
+        alert('Пожалуйста, укажи время сна и пробуждения! 😊');
         return;
     }
 
-    // Расчет продолжительности сна
-    const sleep = new Date(`2000-01-01T${sleepTime}`);
-    let wake = new Date(`2000-01-01T${wakeTime}`);
+    // Расчет продолжительности
+    const sleepDate = new Date(`2000-01-01 ${sleepTime}`);
+    let wakeDate = new Date(`2000-01-01 ${wakeTime}`);
 
-    // Если время пробуждения раньше времени засыпания, значит сон перешел на следующий день
-    if (wake < sleep) {
-        wake = new Date(wake.getTime() + 24 * 60 * 60 * 1000);
+    // Если время пробуждения раньше времени сна - добавляем день
+    if (wakeDate <= sleepDate) {
+        wakeDate = new Date(`2000-01-02 ${wakeTime}`);
     }
 
-    const durationMs = wake - sleep;
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+    const durationMs = wakeDate - sleepDate;
+    const durationHours = durationMs / (1000 * 60 * 60);
+    const hours = Math.floor(durationHours);
+    const minutes = Math.round((durationHours - hours) * 60);
 
-    // Расчет эффективности сна (простая формула)
-    const efficiency = Math.min(100, 80 + (quality * 4));
-
-    // Рекомендации
+    // Оценка эффективности
+    let efficiency = 0;
     let recommendation = '';
-    if (hours < 7) {
-        recommendation = 'Вам стоит увеличить продолжительность сна. Взрослым рекомендуется спать 7-9 часов.';
-    } else if (hours > 9) {
-        recommendation = 'Вы спите дольше рекомендованного. Избыток сна также может негативно влиять на здоровье.';
-    } else {
-        recommendation = 'Отличная продолжительность сна! Продолжайте в том же духе.';
+    let emoji = '';
+
+    if (durationHours >= 9 && durationHours <= 11) {
+        efficiency = 100;
+        emoji = '🌟';
+        recommendation = 'Отличный сон! Ты молодец!';
+    } else if (durationHours >= 8 && durationHours < 9) {
+        efficiency = 85;
+        emoji = '😊';
+        recommendation = 'Хороший сон! Попробуй поспать чуть дольше.';
+    } else if (durationHours >= 7 && durationHours < 8) {
+        efficiency = 70;
+        emoji = '🙂';
+        recommendation = 'Неплохо, но тебе нужно больше сна для роста!';
+    } else if (durationHours < 7) {
+        efficiency = 50;
+        emoji = '😴';
+        recommendation = 'Ой-ой! Тебе нужно спать больше! Ложись раньше.';
+    } else if (durationHours > 11) {
+        efficiency = 80;
+        emoji = '😮';
+        recommendation = 'Ты поспал очень долго! Это тоже не очень полезно.';
     }
 
-    if (quality < 3) {
-        recommendation += ' Обратите внимание на качество вашего сна. Попробуйте применить наши советы для его улучшения.';
-    }
+    // Учитываем качество сна
+    const qualityNum = parseInt(quality);
+    efficiency = Math.round(efficiency * (qualityNum / 5));
 
-    // Обновление результатов
-    document.getElementById('sleep-duration').textContent = `Продолжительность сна: ${hours} часов ${minutes} минут`;
-    document.getElementById('sleep-efficiency').textContent = `Эффективность сна: ${efficiency.toFixed(1)}%`;
-    document.getElementById('sleep-recommendation').textContent = `Рекомендации: ${recommendation}`;
+    // Показываем результаты
+    const resultDiv = document.getElementById('sleep-result');
+    document.getElementById('sleep-duration').innerHTML = `<strong>⏱️ Продолжительность:</strong> ${hours} ч ${minutes} мин`;
+    document.getElementById('sleep-efficiency').innerHTML = `<strong>${emoji} Качество сна:</strong> ${efficiency}%`;
+    document.getElementById('sleep-recommendation').innerHTML = `<strong>💬 Совет от облачка:</strong> ${recommendation}`;
 
-    // Показать результаты
-    document.getElementById('sleep-result').classList.add('active');
+    resultDiv.classList.add('active');
+    resultDiv.style.display = 'block';
 
-    // Сохранение в localStorage для статистики
-    const sleepRecord = {
+    // Сохраняем данные
+    saveSleepRecord({
         date: new Date().toISOString().split('T')[0],
-        sleepTime,
-        wakeTime,
-        duration: `${hours}:${minutes}`,
-        quality,
-        efficiency
-    };
+        sleepTime: sleepTime,
+        wakeTime: wakeTime,
+        duration: durationHours.toFixed(1),
+        quality: qualityNum,
+        efficiency: efficiency,
+        notes: notes
+    });
 
-    let sleepHistory = JSON.parse(localStorage.getItem('sleepHistory')) || [];
-    sleepHistory.push(sleepRecord);
-    localStorage.setItem('sleepHistory', JSON.stringify(sleepHistory));
+    // Сохраняем последние значения времени
+    localStorage.setItem('lastSleepTime', sleepTime);
+    localStorage.setItem('lastWakeTime', wakeTime);
 }
+
+// Сохранение записи о сне
+function saveSleepRecord(record) {
+    let history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+
+    // Проверяем, нет ли уже записи за сегодня
+    const todayIndex = history.findIndex(r => r.date === record.date);
+    if (todayIndex >= 0) {
+        history[todayIndex] = record; // Обновляем
+    } else {
+        history.unshift(record); // Добавляем в начало
+    }
+
+    // Храним только последние 30 записей
+    if (history.length > 30) {
+        history = history.slice(0, 30);
+    }
+
+    localStorage.setItem('sleepHistory', JSON.stringify(history));
+    console.log('💾 Запись сохранена:', record);
+}
+
+// Получение истории сна
+function getSleepHistory() {
+    return JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+}
+
+// Получение статистики за неделю
+function getWeeklyStats() {
+    const history = getSleepHistory();
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+
+    const weekRecords = history.filter(r => new Date(r.date) >= weekAgo);
+
+    if (weekRecords.length === 0) {
+        return null;
+    }
+
+    const avgDuration = weekRecords.reduce((sum, r) => sum + parseFloat(r.duration), 0) / weekRecords.length;
+    const avgQuality = weekRecords.reduce((sum, r) => sum + r.quality, 0) / weekRecords.length;
+    const avgEfficiency = weekRecords.reduce((sum, r) => sum + r.efficiency, 0) / weekRecords.length;
+
+    return {
+        avgDuration: avgDuration.toFixed(1),
+        avgQuality: avgQuality.toFixed(1),
+        avgEfficiency: Math.round(avgEfficiency),
+        recordCount: weekRecords.length,
+        records: weekRecords
+    };
+}
+
+// Экспорт функций
+window.SleepTracker = {
+    calculate: calculateSleep,
+    save: saveSleepRecord,
+    getHistory: getSleepHistory,
+    getWeeklyStats: getWeeklyStats
+};
