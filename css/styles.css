@@ -1,30 +1,28 @@
 /* ===================================================
-   СоноТрекер - Современные стили
-   Версия 2.0 - Обновлённый дизайн
+   СоноТрекер - Детский дизайн
+   Версия 3.0 - Для детей
    =================================================== */
 
-/* Импорт шрифтов */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Импорт игривого шрифта */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-/* CSS Переменные для удобства */
+/* CSS Переменные - Детская палитра */
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    --glass-bg: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.18);
-    --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.15);
-    --shadow-hover: 0 15px 45px rgba(31, 38, 135, 0.25);
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a4a6a;
-    --accent-blue: #667eea;
-    --accent-purple: #764ba2;
-    --accent-pink: #f093fb;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --border-radius: 16px;
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-purple: #9b7ed9;
+    --primary-blue: #7ec8e3;
+    --primary-pink: #f8a5c2;
+    --primary-yellow: #fed330;
+    --primary-mint: #7bed9f;
+    --bg-lavender: #e8e0f0;
+    --bg-soft: #f5f0ff;
+    --text-dark: #4a3f5c;
+    --text-soft: #6b5b7a;
+    --white: #ffffff;
+    --shadow-soft: 0 8px 30px rgba(155, 126, 217, 0.2);
+    --shadow-hover: 0 12px 40px rgba(155, 126, 217, 0.3);
+    --border-radius: 20px;
+    --border-radius-lg: 30px;
+    --transition: all 0.3s ease;
 }
 
 /* Сброс и базовые стили */
@@ -39,91 +37,47 @@ html {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-    color: var(--text-primary);
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(180deg, var(--bg-soft) 0%, var(--bg-lavender) 100%);
+    background-attachment: fixed;
+    color: var(--text-dark);
     line-height: 1.7;
     min-height: 100vh;
-    overflow-x: hidden;
 }
 
-/* Анимация появления элементов */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-
-    100% {
-        background-position: 200% 0;
-    }
+/* Звёздочки на фоне */
+body::before {
+    content: '✨ ⭐ 💫 ✨ ⭐ 💫 ✨ ⭐';
+    position: fixed;
+    top: 100px;
+    left: 0;
+    right: 0;
+    font-size: 1.5rem;
+    text-align: center;
+    opacity: 0.15;
+    pointer-events: none;
+    letter-spacing: 50px;
+    z-index: -1;
 }
 
 /* ===================================================
-   Header и навигация
+   Header - Детский стиль
    =================================================== */
 header {
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-blue) 100%);
     color: white;
-    padding: 1.2rem 0;
+    padding: 1rem 0;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 30px rgba(102, 126, 234, 0.4);
-    backdrop-filter: blur(10px);
-}
-
-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    pointer-events: none;
+    box-shadow: var(--shadow-soft);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
 }
 
 .container {
     width: 90%;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
-    position: relative;
 }
 
 .header-content {
@@ -133,17 +87,20 @@ header::before {
 }
 
 .logo {
-    font-size: 1.8rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+    font-size: 1.6rem;
+    font-weight: 900;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.logo::before {
-    content: '🌙';
-    animation: float 3s ease-in-out infinite;
+.logo-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: white;
+    padding: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -155,144 +112,141 @@ nav ul {
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-weight: 500;
-    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    padding: 0.6rem 1rem;
     border-radius: 50px;
-    transition: var(--transition-smooth);
-    position: relative;
-    overflow: hidden;
-}
-
-nav ul li a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(-100%);
-    transition: var(--transition-smooth);
-}
-
-nav ul li a:hover::before {
-    transform: translateX(0);
+    transition: var(--transition);
+    font-size: 0.95rem;
 }
 
 nav ul li a:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
 }
 
 /* ===================================================
    Main контент
    =================================================== */
 main {
-    padding: 3rem 0;
-    animation: fadeInUp 0.8s ease-out;
+    padding: 2rem 0;
 }
 
 .page-header {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--border-radius);
-    padding: 2.5rem;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--glass-border);
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
     position: relative;
     overflow: hidden;
 }
 
 .page-header::before {
-    content: '';
+    content: '🌙 ⭐ 💤';
     position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-    pointer-events: none;
+    top: 10px;
+    right: 20px;
+    font-size: 1.5rem;
+    opacity: 0.5;
+}
+
+/* Маскот */
+.mascot {
+    width: 120px;
+    height: auto;
+    margin: 0 auto 1rem;
+    display: block;
+}
+
+.mascot-small {
+    width: 60px;
+    height: auto;
+    vertical-align: middle;
+}
+
+.mascot-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 /* ===================================================
-   Типографика
+   Типографика - Детская
    =================================================== */
 h1 {
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-purple);
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 900;
 }
 
 h2 {
-    color: var(--text-primary);
+    color: var(--primary-purple);
     margin: 1.5rem 0 1rem;
-    font-size: 1.6rem;
-    font-weight: 700;
-    position: relative;
-    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-h2::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 50px;
-    height: 4px;
-    background: var(--primary-gradient);
-    border-radius: 2px;
+h2::before {
+    content: '🌟';
+    font-size: 1.2rem;
 }
 
 h3 {
-    color: var(--accent-purple);
-    margin: 1.2rem 0 0.8rem;
-    font-weight: 600;
+    color: var(--text-dark);
+    margin: 1rem 0 0.5rem;
+    font-weight: 700;
 }
 
 p {
     margin-bottom: 1rem;
-    color: var(--text-secondary);
+    color: var(--text-soft);
+    font-size: 1.05rem;
 }
 
 /* ===================================================
-   Секции контента - Glassmorphism
+   Секции - Карточки с облачками
    =================================================== */
 .content-section,
 .tracker-section {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--border-radius);
-    padding: 2.5rem;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--glass-border);
-    margin-bottom: 2.5rem;
-    transition: var(--transition-smooth);
-    animation: fadeInUp 0.8s ease-out;
+    margin-bottom: 2rem;
+    border: 3px solid transparent;
+    transition: var(--transition);
 }
 
 .content-section:hover,
 .tracker-section:hover {
+    border-color: var(--primary-purple);
     transform: translateY(-5px);
     box-shadow: var(--shadow-hover);
 }
 
 /* ===================================================
-   Формы трекера
+   Формы - Дружелюбный стиль
    =================================================== */
 .tracker-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group {
@@ -302,68 +256,67 @@ p {
 
 label {
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+label::before {
+    content: '💜';
     font-size: 0.9rem;
 }
 
 input,
 select {
     padding: 1rem 1.2rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+    border: 3px solid var(--bg-lavender);
+    border-radius: 15px;
     font-size: 1rem;
     font-family: inherit;
-    transition: var(--transition-smooth);
-    background: rgba(255, 255, 255, 0.8);
+    transition: var(--transition);
+    background: var(--bg-soft);
 }
 
 input:focus,
 select:focus {
     outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
-    transform: translateY(-2px);
+    border-color: var(--primary-purple);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(155, 126, 217, 0.2);
 }
 
 input::placeholder {
-    color: #94a3b8;
+    color: #b8a8c8;
 }
 
 button {
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
     color: white;
     border: none;
     padding: 1rem 2rem;
-    border-radius: 12px;
+    border-radius: 50px;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 800;
     font-family: inherit;
-    transition: var(--transition-smooth);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: var(--transition);
+    box-shadow: 0 6px 20px rgba(155, 126, 217, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: 0.5s;
-}
-
-button:hover::before {
-    left: 100%;
+button::after {
+    content: '✨';
 }
 
 button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(155, 126, 217, 0.5);
 }
 
 button:active {
@@ -374,83 +327,94 @@ button:active {
    Результаты
    =================================================== */
 .result {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    padding: 2rem;
+    background: linear-gradient(135deg, rgba(155, 126, 217, 0.1) 0%, rgba(248, 165, 194, 0.1) 100%);
+    padding: 1.5rem;
     border-radius: var(--border-radius);
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     display: none;
-    border: 1px solid rgba(102, 126, 234, 0.2);
-    animation: fadeInUp 0.5s ease-out;
+    border: 2px dashed var(--primary-purple);
+    text-align: center;
 }
 
 .result.active {
     display: block;
+    animation: popIn 0.4s ease;
 }
 
-.result h2 {
-    color: var(--accent-purple);
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-.result p {
-    color: var(--text-primary);
-    font-weight: 500;
+.result h2::before {
+    content: '🎉';
 }
 
 /* ===================================================
-   Аккордеон
+   Аккордеон - Милый стиль
    =================================================== */
 .accordion {
     margin-top: 2rem;
 }
 
 .accordion-item {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    background: var(--white);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--glass-border);
     overflow: hidden;
-    transition: var(--transition-smooth);
+    border: 2px solid var(--bg-lavender);
+    transition: var(--transition);
 }
 
 .accordion-item:hover {
-    transform: translateX(5px);
-    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-purple);
 }
 
 .accordion-header {
-    padding: 1.5rem 2rem;
+    padding: 1.2rem 1.5rem;
     background: transparent;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: var(--transition-smooth);
-    font-weight: 600;
-    color: var(--text-primary);
+    transition: var(--transition);
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1.05rem;
 }
 
 .accordion-header:hover {
-    background: rgba(102, 126, 234, 0.05);
+    background: var(--bg-soft);
+}
+
+.accordion-header span:first-child::before {
+    content: '🌜 ';
 }
 
 .accordion-content {
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+    transition: max-height 0.4s ease, padding 0.4s ease;
 }
 
 .accordion-content.active {
-    padding: 0 2rem 2rem;
+    padding: 0 1.5rem 1.5rem;
     max-height: 500px;
 }
 
 .accordion-icon {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.8rem;
-    color: var(--accent-blue);
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+    color: var(--primary-purple);
 }
 
 .accordion-header.active .accordion-icon {
@@ -458,35 +422,30 @@ button:active {
 }
 
 /* ===================================================
-   Ссылки и кнопки
+   Ссылки - Кнопки-облачка
    =================================================== */
 .page-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     margin-top: 1rem;
-    background: var(--secondary-gradient);
+    background: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-purple) 100%);
     color: white;
     padding: 0.8rem 1.5rem;
     border-radius: 50px;
     text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition-smooth);
-    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(248, 165, 194, 0.4);
+}
+
+.page-link::before {
+    content: '👉';
 }
 
 .page-link:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.5);
-}
-
-.page-link::after {
-    content: '→';
-    transition: transform 0.3s ease;
-}
-
-.page-link:hover::after {
-    transform: translateX(5px);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(248, 165, 194, 0.5);
 }
 
 .back-link {
@@ -494,32 +453,27 @@ button:active {
     align-items: center;
     gap: 0.5rem;
     margin-top: 1.5rem;
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-mint) 100%);
     color: white;
     padding: 0.8rem 1.5rem;
     border-radius: 50px;
     text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition-smooth);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(126, 200, 227, 0.4);
 }
 
 .back-link::before {
-    content: '←';
-    transition: transform 0.3s ease;
-}
-
-.back-link:hover::before {
-    transform: translateX(-5px);
+    content: '🏠';
 }
 
 .back-link:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 8px 25px rgba(126, 200, 227, 0.5);
 }
 
 /* ===================================================
-   Фазы сна - Карточки
+   Фазы сна - Карточки со звёздочками
    =================================================== */
 .phases-diagram {
     display: flex;
@@ -529,11 +483,11 @@ button:active {
 }
 
 .phase {
-    padding: 1.5rem 1.5rem 1.5rem 5.5rem;
+    padding: 1.5rem 1.5rem 1.5rem 5rem;
     border-radius: var(--border-radius);
     position: relative;
-    transition: var(--transition-smooth);
-    border: 1px solid transparent;
+    transition: var(--transition);
+    border: 2px solid transparent;
 }
 
 .phase:hover {
@@ -544,7 +498,7 @@ button:active {
 .phase::before {
     content: "";
     position: absolute;
-    left: 1.5rem;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     width: 50px;
@@ -553,74 +507,78 @@ button:active {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
+    font-weight: 900;
     font-size: 0.85rem;
     color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .phase-n1 {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-    border-color: rgba(59, 130, 246, 0.2);
+    background: linear-gradient(135deg, rgba(126, 200, 227, 0.2) 0%, rgba(126, 200, 227, 0.1) 100%);
+    border-color: var(--primary-blue);
 }
 
 .phase-n1::before {
     content: "N1";
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: var(--primary-blue);
 }
 
 .phase-n2 {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-    border-color: rgba(16, 185, 129, 0.2);
+    background: linear-gradient(135deg, rgba(126, 237, 159, 0.2) 0%, rgba(126, 237, 159, 0.1) 100%);
+    border-color: var(--primary-mint);
 }
 
 .phase-n2::before {
     content: "N2";
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--primary-mint);
 }
 
 .phase-n3 {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
-    border-color: rgba(245, 158, 11, 0.2);
+    background: linear-gradient(135deg, rgba(254, 211, 48, 0.2) 0%, rgba(254, 211, 48, 0.1) 100%);
+    border-color: var(--primary-yellow);
 }
 
 .phase-n3::before {
     content: "N3";
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: var(--primary-yellow);
+    color: var(--text-dark);
 }
 
 .phase-rem {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
-    border-color: rgba(168, 85, 247, 0.2);
+    background: linear-gradient(135deg, rgba(248, 165, 194, 0.2) 0%, rgba(248, 165, 194, 0.1) 100%);
+    border-color: var(--primary-pink);
 }
 
 .phase-rem::before {
-    content: "REM";
-    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-    font-size: 0.7rem;
+    content: "💭";
+    background: var(--primary-pink);
+    font-size: 1.2rem;
 }
 
 .cycle {
     margin: 1.5rem 0;
-    padding: 1.5rem 2rem;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    padding: 1.5rem;
+    background: var(--bg-soft);
     border-radius: var(--border-radius);
-    border-left: 4px solid var(--accent-blue);
-    transition: var(--transition-smooth);
+    border-left: 5px solid var(--primary-purple);
+    transition: var(--transition);
 }
 
 .cycle:hover {
     transform: translateX(5px);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    background: white;
+}
+
+.cycle h3::before {
+    content: '🌙 ';
 }
 
 /* ===================================================
-   Советы по сну
+   Советы - Чеклист
    =================================================== */
 .tip-category {
     margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 1.5rem;
+    border-bottom: 2px dashed var(--bg-lavender);
 }
 
 .tip-category:last-child {
@@ -632,17 +590,19 @@ button:active {
 }
 
 .tip-list li {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     padding: 1rem 1rem 1rem 3rem;
     position: relative;
-    background: rgba(102, 126, 234, 0.03);
-    border-radius: 12px;
-    transition: var(--transition-smooth);
+    background: var(--bg-soft);
+    border-radius: 15px;
+    transition: var(--transition);
+    font-size: 1rem;
 }
 
 .tip-list li:hover {
-    background: rgba(102, 126, 234, 0.08);
+    background: white;
     transform: translateX(5px);
+    box-shadow: var(--shadow-soft);
 }
 
 .tip-list li::before {
@@ -650,41 +610,41 @@ button:active {
     color: white;
     font-weight: bold;
     position: absolute;
-    left: 1rem;
+    left: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    background: var(--primary-gradient);
+    width: 26px;
+    height: 26px;
+    background: var(--primary-mint);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
 }
 
 .routine-example {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
-    padding: 2rem;
+    background: linear-gradient(135deg, var(--bg-soft) 0%, rgba(248, 165, 194, 0.1) 100%);
+    padding: 1.5rem;
     border-radius: var(--border-radius);
     margin: 1.5rem 0;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid var(--primary-pink);
 }
 
 .routine-step {
     display: flex;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    transition: var(--transition-smooth);
+    gap: 1rem;
+    padding: 0.8rem;
+    background: white;
+    border-radius: 15px;
+    transition: var(--transition);
 }
 
 .routine-step:hover {
-    background: rgba(255, 255, 255, 0.8);
     transform: translateX(5px);
+    box-shadow: var(--shadow-soft);
 }
 
 .routine-step:last-child {
@@ -692,18 +652,18 @@ button:active {
 }
 
 .routine-time {
-    font-weight: 700;
+    font-weight: 800;
     min-width: 70px;
     color: white;
-    background: var(--primary-gradient);
-    padding: 0.5rem 1rem;
+    background: var(--primary-purple);
+    padding: 0.5rem 0.8rem;
     border-radius: 50px;
     font-size: 0.9rem;
     text-align: center;
 }
 
 .routine-description {
-    color: var(--text-secondary);
+    color: var(--text-soft);
     flex: 1;
 }
 
@@ -711,48 +671,54 @@ button:active {
    Наука сна
    =================================================== */
 .science-fact {
-    background: rgba(255, 255, 255, 0.6);
-    padding: 2rem;
+    background: var(--bg-soft);
+    padding: 1.5rem;
     border-radius: var(--border-radius);
     margin: 1.5rem 0;
-    border-left: 4px solid var(--accent-blue);
-    transition: var(--transition-smooth);
-    box-shadow: var(--shadow-soft);
+    border-left: 5px solid var(--primary-blue);
+    transition: var(--transition);
 }
 
 .science-fact:hover {
     transform: translateX(5px);
-    box-shadow: var(--shadow-hover);
+    box-shadow: var(--shadow-soft);
+    background: white;
+}
+
+.science-fact h3::before {
+    content: '🔬 ';
 }
 
 .research-highlight {
     display: flex;
-    margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.7);
+    margin: 1.5rem 0;
+    background: white;
     border-radius: var(--border-radius);
     overflow: hidden;
     box-shadow: var(--shadow-soft);
-    transition: var(--transition-smooth);
+    transition: var(--transition);
+    border: 2px solid var(--bg-lavender);
 }
 
 .research-highlight:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-hover);
+    border-color: var(--primary-purple);
 }
 
 .research-icon {
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
     color: white;
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 100px;
+    min-width: 90px;
     font-size: 2.5rem;
 }
 
 .research-content {
-    padding: 2rem;
+    padding: 1.5rem;
     flex: 1;
 }
 
@@ -761,110 +727,112 @@ button:active {
 }
 
 .disorder {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-soft);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: var(--transition-smooth);
+    border: 2px solid transparent;
+    transition: var(--transition);
 }
 
 .disorder:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-soft);
+    border-color: var(--primary-purple);
+    background: white;
 }
 
-.disorder:last-child {
-    margin-bottom: 0;
+.disorder h3::before {
+    content: '💤 ';
 }
 
 /* ===================================================
-   Статистика
+   Статистика - Яркие карточки
    =================================================== */
 .stats-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    background: white;
     border-radius: var(--border-radius);
-    padding: 2rem;
+    padding: 1.5rem;
     text-align: center;
-    border: 1px solid var(--glass-border);
-    transition: var(--transition-smooth);
+    border: 3px solid var(--bg-lavender);
+    transition: var(--transition);
     position: relative;
-    overflow: hidden;
 }
 
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--primary-gradient);
+.stat-card:nth-child(1) {
+    border-color: var(--primary-purple);
+}
+
+.stat-card:nth-child(2) {
+    border-color: var(--primary-pink);
+}
+
+.stat-card:nth-child(3) {
+    border-color: var(--primary-blue);
+}
+
+.stat-card:nth-child(4) {
+    border-color: var(--primary-mint);
 }
 
 .stat-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-8px) rotate(-2deg);
     box-shadow: var(--shadow-hover);
 }
 
 .stat-value {
     font-size: 2.5rem;
-    font-weight: 800;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.5rem;
+    font-weight: 900;
+    color: var(--primary-purple);
+    margin-bottom: 0.3rem;
 }
 
 .stat-label {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    font-weight: 500;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .chart-container {
-    height: 300px;
+    height: 280px;
     margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--bg-soft);
     border-radius: var(--border-radius);
     padding: 1.5rem;
     display: flex;
     align-items: flex-end;
     justify-content: space-around;
-    border: 1px solid var(--glass-border);
+    border: 2px solid var(--bg-lavender);
 }
 
 .chart-bar {
-    background: var(--primary-gradient);
+    background: linear-gradient(180deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
     width: 45px;
-    border-radius: 8px 8px 0 0;
+    border-radius: 10px 10px 0 0;
     position: relative;
-    transition: var(--transition-smooth);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: var(--transition);
 }
 
 .chart-bar:hover {
     transform: scaleY(1.05);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 -5px 20px rgba(155, 126, 217, 0.4);
 }
 
 .chart-label {
     position: absolute;
-    bottom: -30px;
+    bottom: -28px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-weight: 700;
 }
 
 .sleep-history {
@@ -881,130 +849,128 @@ button:active {
 
 .history-table th,
 .history-table td {
-    padding: 1rem 1.2rem;
+    padding: 1rem;
     text-align: left;
 }
 
 .history-table th {
-    background: var(--primary-gradient);
+    background: var(--primary-purple);
     color: white;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.95rem;
 }
 
 .history-table th:first-child {
-    border-radius: 12px 0 0 0;
+    border-radius: 15px 0 0 0;
 }
 
 .history-table th:last-child {
-    border-radius: 0 12px 0 0;
+    border-radius: 0 15px 0 0;
 }
 
 .history-table td {
-    background: rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: white;
+    border-bottom: 2px solid var(--bg-lavender);
 }
 
 .history-table tr:last-child td:first-child {
-    border-radius: 0 0 0 12px;
+    border-radius: 0 0 0 15px;
 }
 
 .history-table tr:last-child td:last-child {
-    border-radius: 0 0 12px 0;
+    border-radius: 0 0 15px 0;
 }
 
 .history-table tr:hover td {
-    background: rgba(102, 126, 234, 0.05);
+    background: var(--bg-soft);
 }
 
 .quality-badge {
     padding: 0.4rem 1rem;
     border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
 }
 
 .quality-excellent {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-    color: #059669;
+    background: var(--primary-mint);
+    color: white;
 }
 
 .quality-good {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
-    color: #2563eb;
+    background: var(--primary-blue);
+    color: white;
 }
 
 .quality-average {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
-    color: #d97706;
+    background: var(--primary-yellow);
+    color: var(--text-dark);
 }
 
 .quality-poor {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(249, 115, 22, 0.1) 100%);
-    color: #ea580c;
+    background: var(--primary-pink);
+    color: white;
 }
 
 .quality-bad {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
-    color: #dc2626;
+    background: #ff7675;
+    color: white;
 }
 
 .no-data {
     text-align: center;
     padding: 3rem;
-    color: var(--text-secondary);
-    font-style: italic;
+    color: var(--text-soft);
+    font-size: 1.1rem;
+}
+
+.no-data::before {
+    content: '😴';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 /* ===================================================
-   Footer
+   Footer - Ночное небо
    =================================================== */
 footer {
-    background: var(--dark-gradient);
+    background: linear-gradient(180deg, #2d1b4e 0%, #1a1033 100%);
     color: white;
-    padding: 4rem 0 2rem;
-    margin-top: 4rem;
+    padding: 3rem 0 2rem;
+    margin-top: 3rem;
     position: relative;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
 }
 
 footer::before {
-    content: '';
+    content: '⭐ ✨ 🌙 ✨ ⭐ 💫 ⭐ ✨ 🌙 ✨ ⭐';
     position: absolute;
-    top: 0;
+    top: 20px;
     left: 0;
     right: 0;
-    height: 4px;
-    background: var(--primary-gradient);
+    text-align: center;
+    font-size: 1.2rem;
+    opacity: 0.6;
 }
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
 .footer-section h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.footer-section h3::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    background: var(--accent-pink);
-    border-radius: 50%;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-pink);
 }
 
 .footer-section p {
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.95rem;
-    line-height: 1.8;
 }
 
 .footer-section ul {
@@ -1012,39 +978,25 @@ footer::before {
 }
 
 .footer-section ul li {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
 }
 
 .footer-section ul li a {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    transition: var(--transition-smooth);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.footer-section ul li a::before {
-    content: '→';
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: var(--transition-smooth);
-}
-
-.footer-section ul li a:hover::before {
-    opacity: 1;
-    transform: translateX(0);
+    transition: var(--transition);
+    font-weight: 600;
 }
 
 .footer-section ul li a:hover {
-    color: white;
-    padding-left: 1rem;
+    color: var(--primary-pink);
+    padding-left: 0.5rem;
 }
 
 .footer-bottom {
     text-align: center;
-    margin-top: 3rem;
-    padding-top: 2rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.9rem;
@@ -1068,11 +1020,15 @@ footer::before {
 
     nav ul li a {
         padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .mascot {
+        width: 100px;
     }
 
     .tracker-form {
@@ -1089,25 +1045,17 @@ footer::before {
 
     .research-icon {
         min-width: 100%;
-        padding: 1.5rem;
+        padding: 1.2rem;
+        font-size: 2rem;
     }
 
     .stats-overview {
         grid-template-columns: 1fr 1fr;
     }
 
-    .history-table {
-        font-size: 0.85rem;
-    }
-
-    .history-table th,
-    .history-table td {
-        padding: 0.8rem;
-    }
-
     .routine-step {
         flex-direction: column;
-        gap: 0.8rem;
+        gap: 0.5rem;
     }
 
     .routine-time {
@@ -1130,39 +1078,33 @@ footer::before {
         grid-template-columns: 1fr;
     }
 
-    .stat-card {
-        padding: 1.5rem;
-    }
-
-    .stat-value {
-        font-size: 2rem;
+    .stat-card:hover {
+        transform: translateY(-5px);
     }
 }
 
 /* ===================================================
-   Скроллбар
+   Стилизация скроллбара
    =================================================== */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: var(--bg-lavender);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-gradient);
-    border-radius: 5px;
+    background: linear-gradient(180deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+    border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-purple);
+    background: var(--primary-purple);
 }
 
-/* ===================================================
-   Выделение текста
-   =================================================== */
+/* Выделение текста */
 ::selection {
-    background: rgba(102, 126, 234, 0.3);
-    color: var(--text-primary);
+    background: rgba(155, 126, 217, 0.3);
+    color: var(--text-dark);
 }
