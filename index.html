@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СоноТрекер - Ваш персональный трекер сна</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">СоноТрекер</div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="sleep-phases.html">Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">Советы по сну</a></li>
+                        <li><a href="sleep-statistics.html">Статистика</a></li>
+                        <li><a href="sleep-science.html">Наука сна</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tracker-section">
+            <h1>Трекер сна</h1>
+            <p>Отслеживайте свой сон для улучшения качества жизни и здоровья</p>
+            
+            <div class="tracker-form">
+                <div class="form-group">
+                    <label for="sleep-time">Время отхода ко сну</label>
+                    <input type="time" id="sleep-time" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="wake-time">Время пробуждения</label>
+                    <input type="time" id="wake-time" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sleep-quality">Качество сна</label>
+                    <select id="sleep-quality">
+                        <option value="5">Отлично</option>
+                        <option value="4">Хорошо</option>
+                        <option value="3">Средне</option>
+                        <option value="2">Плохо</option>
+                        <option value="1">Очень плохо</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sleep-notes">Заметки о сне</label>
+                    <input type="text" id="sleep-notes" placeholder="Коротко опишите свой сон">
+                </div>
+            </div>
+            
+            <button id="calculate-sleep">Рассчитать сон</button>
+            
+            <div class="result" id="sleep-result">
+                <h2>Результаты анализа сна</h2>
+                <p id="sleep-duration">Продолжительность сна: </p>
+                <p id="sleep-efficiency">Эффективность сна: </p>
+                <p id="sleep-recommendation">Рекомендации: </p>
+            </div>
+        </section>
+        
+        <section class="accordion">
+            <h2>Узнайте больше о вашем сне</h2>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Фазы сна и их значение</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Сон состоит из нескольких фаз, которые циклически повторяются в течение ночи. Понимание этих фаз поможет вам улучшить качество отдыха.</p>
+                    <a href="sleep-phases.html" class="page-link">Подробнее о фазах сна</a>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Советы для улучшения качества сна</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Простые изменения в распорядке дня могут значительно улучшить ваш сон. Узнайте о проверенных методах и привычках.</p>
+                    <a href="sleep-tips.html" class="page-link">Читать советы</a>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Статистика и анализ вашего сна</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Отслеживайте свои привычки сна с течением времени, чтобы выявить закономерности и улучшить свой отдых.</p>
+                    <a href="sleep-statistics.html" class="page-link">Посмотреть статистику</a>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>Наука сна: как сон влияет на здоровье</span>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Узнайте о научных исследованиях сна и о том, как качественный отдых влияет на ваше физическое и ментальное здоровье.</p>
+                    <a href="sleep-science.html" class="page-link">Изучить науку сна</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>СоноТрекер</h3>
+                    <p>Ваш персональный помощник для улучшения качества сна и здорового отдыха.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="sleep-phases.html">Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">Советы по сну</a></li>
+                        <li><a href="sleep-statistics.html">Статистика</a></li>
+                        <li><a href="sleep-science.html">Наука сна</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Проект выполнен ученицей в рамках учебной работы.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 СоноТрекер. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/tracker.js"></script>
+</body>
+</html>

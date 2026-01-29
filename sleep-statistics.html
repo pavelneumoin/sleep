@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика сна - СоноТрекер</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">СоноТрекер</div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="sleep-phases.html">Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">Советы по сну</a></li>
+                        <li><a href="sleep-statistics.html">Статистика</a></li>
+                        <li><a href="sleep-science.html">Наука сна</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="page-header">
+            <h1>Статистика и анализ вашего сна</h1>
+            <p>Отслеживайте свои привычки сна с течением времени, чтобы выявить закономерности и улучшить качество
+                отдыха.</p>
+        </section>
+
+        <section class="content-section">
+            <h2>Обзор статистики</h2>
+            <p>Здесь представлена сводка ваших данных о сне за последние 7 дней. Регулярное отслеживание поможет вам
+                лучше понять свои привычки сна и их влияние на ваше самочувствие.</p>
+
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-sleep">7.2 ч</div>
+                    <div class="stat-label">Средняя продолжительность</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-efficiency">84%</div>
+                    <div class="stat-label">Средняя эффективность</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="avg-quality">3.8</div>
+                    <div class="stat-label">Среднее качество</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="consistency">76%</div>
+                    <div class="stat-label">Регулярность сна</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Продолжительность сна за неделю</h2>
+            <p>Эта диаграмма показывает, сколько часов вы спали каждый день. Рекомендуемая продолжительность сна для
+                взрослых - 7-9 часов в сутки.</p>
+
+            <div class="chart-container" id="duration-chart">
+                <!-- Диаграмма будет сгенерирована JavaScript -->
+                <div class="no-data">Данные загружаются...</div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Качество сна за неделю</h2>
+            <p>Отслеживание качества сна помогает выявить факторы, которые влияют на ваш отдых (стресс, питание,
+                физическая активность и т.д.).</p>
+
+            <div class="chart-container" id="quality-chart">
+                <!-- Диаграмма будет сгенерирована JavaScript -->
+                <div class="no-data">Данные загружаются...</div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>История сна</h2>
+            <p>Подробная история ваших записей о сне. Вы можете использовать эти данные для выявления закономерностей и
+                корректировки своих привычек.</p>
+
+            <div class="sleep-history">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Время засыпания</th>
+                            <th>Время пробуждения</th>
+                            <th>Продолжительность</th>
+                            <th>Качество</th>
+                            <th>Эффективность</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sleep-history-body">
+                        <!-- Данные будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="no-data" id="no-history-message">У вас пока нет записей о сне. Начните отслеживание на
+                    главной странице!</div>
+            </div>
+
+            <a href="index.html" class="back-link">Вернуться на главную</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>СоноТрекер</h3>
+                    <p>Ваш персональный помощник для улучшения качества сна и здорового отдыха.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="sleep-phases.html">Фазы сна</a></li>
+                        <li><a href="sleep-tips.html">Советы по сну</a></li>
+                        <li><a href="sleep-statistics.html">Статистика</a></li>
+                        <li><a href="sleep-science.html">Наука сна</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Проект выполнен ученицей в рамках учебной работы.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 СоноТрекер. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/statistics.js"></script>
+</body>
+
+</html>
