@@ -1,19 +1,47 @@
 /**
  * СоноТрекер - ИИ Помощник
- * Интеграция с YandexGPT через локальный сервер
+ * Интеграция с YandexGPT через сервер (локальный или Render)
  */
 
-const AI_SERVER = 'http://localhost:3000';
+// URL серверов: сначала пробуем Render, потом localhost
+const RENDER_SERVER = 'https://sonotracker-server.onrender.com';
+const LOCAL_SERVER = 'http://localhost:3000';
+let AI_SERVER = LOCAL_SERVER; // По умолчанию локальный
 
 // Проверка доступности сервера
 async function checkAIServer() {
+    // Сначала пробуем Render сервер
     try {
-        const response = await fetch(`${AI_SERVER}/api/health`);
+        const response = await fetch(`${RENDER_SERVER}/api/health`, {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000) // таймаут 5 секунд
+        });
         const data = await response.json();
-        return data.status === 'ok';
+        if (data.status === 'ok') {
+            AI_SERVER = RENDER_SERVER;
+            console.log('✅ Подключён к Render серверу');
+            return true;
+        }
     } catch (error) {
-        return false;
+        console.log('Render сервер недоступен, пробуем localhost...');
     }
+
+    // Затем пробуем локальный сервер
+    try {
+        const response = await fetch(`${LOCAL_SERVER}/api/health`, {
+            signal: AbortSignal.timeout(3000)
+        });
+        const data = await response.json();
+        if (data.status === 'ok') {
+            AI_SERVER = LOCAL_SERVER;
+            console.log('✅ Подключён к локальному серверу');
+            return true;
+        }
+    } catch (error) {
+        console.log('Локальный сервер тоже недоступен');
+    }
+
+    return false;
 }
 
 // Чат с облачком

@@ -1,5 +1,5 @@
 # Конфиденциальные файлы - НЕ загружать на GitHub!
-server/
+# server/ убран для деплоя на Render (API ключи в переменных окружения)
 *.env
 config.js
 secrets.js

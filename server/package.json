@@ -1,0 +1,14 @@
+{
+  "name": "sonotracker-server",
+  "version": "1.0.0",
+  "description": "СоноТрекер - Сервер YandexGPT для детского трекера сна",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Савкина А.Д., Воронова Д.М.",
+  "license": "MIT"
+}
