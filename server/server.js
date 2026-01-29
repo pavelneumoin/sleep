@@ -221,10 +221,17 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // Проверка работоспособности
+    // Проверка работоспособности (основной путь)
     if (parsedUrl.pathname === '/api/health') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ status: 'ok', message: 'Сервер СоноТрекер работает! 🌙' }));
+        return;
+    }
+
+    // Проверка для Render (альтернативный путь)
+    if (parsedUrl.pathname === '/healthz' || parsedUrl.pathname === '/') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', message: 'СоноТрекер API Server v1.0 🌙' }));
         return;
     }
 
