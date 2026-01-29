@@ -1,0 +1,21 @@
+\babel@toc {russian}{}\relax 
+\contentsline {section}{Введение}{2}{Doc-Start}%
+\contentsline {section}{\numberline {1}Теоретическая часть}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Физиология сна}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Проблемы сна в современном обществе}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Трекеры сна: устройство и принципы работы}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Практическая часть}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Выбор технологий}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Структура веб-проекта}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Алгоритм обработки данных}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Функциональные возможности сайта}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Обоснование выбора подхода}{5}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Интеграция нейросети YandexGPT}{5}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Тестирование}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Методика тестирования}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Результаты тестирования}{7}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Результаты проекта}{7}{section.4}%
+\contentsline {section}{\numberline {5}Перспективы развития}{8}{section.5}%
+\contentsline {section}{Заключение}{8}{Item.19}%
+\contentsline {section}{Список литературы}{9}{Item.25}%
+\contentsline {section}{Приложение}{10}{Item.30}%
