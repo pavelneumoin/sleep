@@ -3,14 +3,23 @@
  * Отображение данных и графиков
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadStatistics();
-    loadHistory();
+document.addEventListener('DOMContentLoaded', async function () {
+    const history = await getSleepHistory();
+    loadStatistics(history);
+    loadHistory(history);
 });
 
+async function getSleepHistory() {
+    try {
+        const response = await window.apiFetch('/sleep');
+        return response.success && response.records ? response.records : [];
+    } catch (e) {
+        return [];
+    }
+}
+
 // Загрузка статистики
-function loadStatistics() {
-    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+function loadStatistics(history) {
 
     if (history.length === 0) {
         return;
@@ -117,8 +126,7 @@ function buildQualityChart(records) {
 }
 
 // Загрузка истории
-function loadHistory() {
-    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+function loadHistory(history) {
     const tbody = document.getElementById('sleep-history-body');
     const noDataMessage = document.getElementById('no-history-message');
 
@@ -177,23 +185,23 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.addEventListener('click', () => {
             const element = document.getElementById('pdf-content-area');
             const opt = {
-                margin:       10,
-                filename:     'sonotracker-report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                margin: 10,
+                filename: 'sonotracker-report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            
+
             downloadBtn.textContent = '⏳ Генерация...';
             downloadBtn.disabled = true;
-            
+
             html2pdf().set(opt).from(element).save().then(() => {
                 downloadBtn.textContent = '📥 Скачать PDF';
                 downloadBtn.disabled = false;
-                
+
                 // Награда за экспорт
                 if (window.Gamification && window.Gamification.rewardQuiz) {
-                    window.Gamification.rewardQuiz(2); 
+                    window.Gamification.rewardQuiz(2);
                 }
             }).catch(err => {
                 console.error(err);

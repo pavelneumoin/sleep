@@ -11,13 +11,28 @@ function initGamification() {
     updateGamificationUI();
 }
 
+let currentGamificationData = { stars: 0, streak: 0, lastRecordDate: null };
+
 function getGamificationData() {
-    return JSON.parse(localStorage.getItem('gamification') || '{"stars": 0, "streak": 0, "lastRecordDate": null}');
+    return currentGamificationData;
 }
 
 function saveGamificationData(data) {
-    localStorage.setItem('gamification', JSON.stringify(data));
+    currentGamificationData = data;
     updateGamificationUI();
+}
+
+async function syncWithServer() {
+    try {
+        const response = await window.apiFetch('/user');
+        if (response.success && response.stats) {
+            currentGamificationData.stars = response.stats.total_stars;
+            currentGamificationData.streak = response.stats.current_streak;
+            updateGamificationUI();
+        }
+    } catch (e) {
+        console.error("Failed to sync stats", e);
+    }
 }
 
 function updateGamificationUI() {
@@ -61,10 +76,12 @@ function rewardForSleepRecord(dateStr) {
 
     // Если уже сохраняли сегодня, не даем звездочки дважды
     if (data.lastRecordDate !== dateStr) {
+        let addedStars = 10;
         data.stars += 10; // +10 звезд за запись
 
         // Бонус за стрик каждые 3 дня
         if (data.streak > 0 && data.streak % 3 === 0) {
+            addedStars += 15;
             data.stars += 15;
             showRewardNotification('🔥 3 дня подряд! +15 звёздочек!');
         } else {
@@ -73,6 +90,12 @@ function rewardForSleepRecord(dateStr) {
 
         data.lastRecordDate = dateStr;
         saveGamificationData(data);
+
+        // Sync stars with backend
+        window.apiFetch('/quiz-reward', {
+            method: 'POST',
+            body: JSON.stringify({ stars: addedStars })
+        });
     }
 }
 
@@ -82,6 +105,12 @@ function rewardForQuiz(amount) {
     data.stars += amount;
     saveGamificationData(data);
     showRewardNotification(`Верно! +${amount} звёздочек ⭐`);
+
+    // Sync stars with backend
+    window.apiFetch('/quiz-reward', {
+        method: 'POST',
+        body: JSON.stringify({ stars: amount })
+    });
 }
 
 function showRewardNotification(message) {
@@ -109,5 +138,6 @@ function showRewardNotification(message) {
 window.Gamification = {
     rewardSleep: rewardForSleepRecord,
     rewardQuiz: rewardForQuiz,
-    getData: getGamificationData
+    getData: getGamificationData,
+    syncWithServer: syncWithServer
 };
