@@ -119,18 +119,22 @@ async function addStars(userId, amount) {
 }
 
 async function addSleepRecord(userId, recordData) {
-    const { date, sleep_time, wake_time, duration, efficiency, quality, notes } = recordData;
+    const { date, sleepTime, wakeTime, sleep_time, wake_time, duration, efficiency, quality, notes } = recordData;
+
+    // Поддержка как camelCase так и snake_case
+    const finalSleep = sleepTime || sleep_time;
+    const finalWake = wakeTime || wake_time;
 
     await run(`
         INSERT INTO sleep_records (user_id, date, sleep_time, wake_time, duration, efficiency, quality, notes) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [userId, date, sleep_time, wake_time, duration, efficiency, quality, notes]);
+    `, [userId, date, finalSleep, finalWake, duration, efficiency, quality, notes]);
 
     return { success: true };
 }
 
 async function getSleepRecords(userId) {
-    return await all('SELECT * FROM sleep_records WHERE user_id = ? ORDER BY date DESC LIMIT 30', [userId]);
+    return await all('SELECT id, user_id, date, sleep_time as sleepTime, wake_time as wakeTime, duration, efficiency, quality, notes FROM sleep_records WHERE user_id = ? ORDER BY date DESC LIMIT 30', [userId]);
 }
 
 module.exports = {
