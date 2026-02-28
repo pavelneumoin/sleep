@@ -94,6 +94,7 @@ header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
 }
 
 .logo-icon {
@@ -121,6 +122,10 @@ nav ul li a {
     border-radius: 50px;
     transition: var(--transition);
     font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
 }
 
 nav ul li a:hover {
@@ -1120,7 +1125,7 @@ footer::before {
     display: flex;
     gap: 0.8rem;
     align-items: center;
-    margin-left: 1rem;
+    margin: 0;
 }
 
 .stat-badge {
