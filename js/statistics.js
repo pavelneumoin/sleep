@@ -168,3 +168,37 @@ function loadHistory() {
 
     tbody.innerHTML = html;
 }
+
+
+// Экспорт PDF
+document.addEventListener('DOMContentLoaded', () => {
+    const downloadBtn = document.getElementById('download-pdf-btn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            const element = document.getElementById('pdf-content-area');
+            const opt = {
+                margin:       10,
+                filename:     'sonotracker-report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            downloadBtn.textContent = '⏳ Генерация...';
+            downloadBtn.disabled = true;
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                downloadBtn.textContent = '📥 Скачать PDF';
+                downloadBtn.disabled = false;
+                
+                // Награда за экспорт
+                if (window.Gamification && window.Gamification.rewardQuiz) {
+                    window.Gamification.rewardQuiz(2); 
+                }
+            }).catch(err => {
+                console.error(err);
+                downloadBtn.textContent = '❌ Ошибка';
+            });
+        });
+    }
+});

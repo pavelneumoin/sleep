@@ -115,6 +115,11 @@ function calculateSleep() {
         notes: notes
     });
 
+    // Начисляем звёздочки
+    if (window.Gamification) {
+        window.Gamification.rewardSleep(new Date().toISOString().split('T')[0]);
+    }
+
     // Сохраняем последние значения времени
     localStorage.setItem('lastSleepTime', sleepTime);
     localStorage.setItem('lastWakeTime', wakeTime);

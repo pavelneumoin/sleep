@@ -1108,3 +1108,58 @@ footer::before {
     background: rgba(155, 126, 217, 0.3);
     color: var(--text-dark);
 }
+
+/* ===================================================
+   Геймификация - Звездочки и Стрики
+   =================================================== */
+.user-stats {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.stat-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-weight: 800;
+    color: white;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: var(--transition);
+}
+
+.star-bg { background: linear-gradient(135deg, var(--primary-yellow) 0%, #f39c12 100%); }
+.streak-bg { background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); }
+
+.stat-badge:hover { transform: scale(1.05); }
+
+.pop-animation { animation: popBadge 0.5s ease; }
+@keyframes popBadge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* Уведомление о награде */
+.reward-notification {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 30px rgba(155, 126, 217, 0.5);
+    z-index: 9999;
+    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    text-align: center;
+}
+.reward-notification.show { bottom: 30px; }

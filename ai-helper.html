@@ -286,8 +286,14 @@
                         <li><a href="sleep-tips.html">💡 Советы</a></li>
                         <li><a href="sleep-statistics.html">📊 Статистика</a></li>
                         <li><a href="ai-helper.html">🤖 Облачко</a></li>
+                        <li><a href="sleep-quiz.html">🏆 Викторина</a></li>
                     </ul>
                 </nav>
+
+                <div class="user-stats" id="user-stats-container">
+                    <span class="stat-badge star-bg" title="Твои звёздочки">⭐ <span id="total-stars">0</span></span>
+                    <span class="stat-badge streak-bg" title="Дней подряд">🔥 <span id="current-streak">0</span></span>
+                </div>
             </div>
         </div>
     </header>
@@ -313,6 +319,12 @@
                 <p>Я придумаю для тебя волшебную сказку!</p>
             </div>
 
+            <div class="ai-feature-card" onclick="showSection('sounds')">
+                <div class="ai-feature-icon">🎵</div>
+                <h3>Музыка для сна</h3>
+                <p>Звуки природы для сладких снов!</p>
+            </div>
+            
             <div class="ai-feature-card" onclick="showSection('dream')">
                 <div class="ai-feature-icon">🔮</div>
                 <h3>Что значит мой сон?</h3>
@@ -320,6 +332,35 @@
             </div>
         </div>
 
+        <!-- Музыка для сна -->
+        <section id="sounds-section" class="story-generator" style="display: none;">
+            <h2>🎵 Волшебные звуки для сна</h2>
+            <p>Включи спокойную музыку, чтобы быстрее уснуть.</p>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                <div class="sound-card" style="background:#f5f0ff; padding:1.5rem; border-radius:15px; text-align:center; flex:1; min-width:200px; border: 2px solid #e8e0f0;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">☔</div>
+                    <h3 style="margin-bottom:1rem; color: #9b7ed9;">Дождик</h3>
+                    <audio id="audio-rain" loop src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3d1da9b6a7.mp3?filename=rain-and-thunder-16705.mp3"></audio>
+                    <button class="chat-send" onclick="toggleAudio('audio-rain', this)" style="padding: 0.8rem 1.5rem; width:100%;">▶️ Слушать</button>
+                </div>
+                
+                <div class="sound-card" style="background:#e8f8f5; padding:1.5rem; border-radius:15px; text-align:center; flex:1; min-width:200px; border: 2px solid #e8e0f0;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">🌲</div>
+                    <h3 style="margin-bottom:1rem; color: #27ae60;">Лес</h3>
+                    <audio id="audio-forest" loop src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_1e3acc44fd.mp3?filename=night-forest-with-insects-122756.mp3"></audio>
+                    <button class="chat-send" onclick="toggleAudio('audio-forest', this)" style="padding: 0.8rem 1.5rem; width:100%; background: linear-gradient(135deg, #7bed9f, #27ae60);">▶️ Слушать</button>
+                </div>
+
+                <div class="sound-card" style="background:#fef9e7; padding:1.5rem; border-radius:15px; text-align:center; flex:1; min-width:200px; border: 2px solid #e8e0f0;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">🌊</div>
+                    <h3 style="margin-bottom:1rem; color: #f39c12;">Океан</h3>
+                    <audio id="audio-sea" loop src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=ocean-wave-2-114251.mp3"></audio>
+                    <button class="chat-send" onclick="toggleAudio('audio-sea', this)" style="padding: 0.8rem 1.5rem; width:100%; background: linear-gradient(135deg, #fed330, #f39c12);">▶️ Слушать</button>
+                </div>
+            </div>
+        </section>
+        
         <!-- Чат с облачком -->
         <section id="chat-section" class="ai-chat-container">
             <h2>💬 Спроси у Облачка</h2>
@@ -414,13 +455,85 @@
         </div>
     </footer>
 
-    <script src="js/ai-helper.js"></script>
+    <script src="js/ai-helper.js">
+        // Audio Toggle Logic
+        function toggleAudio(id, btn) {
+            const audios = document.querySelectorAll('audio');
+            const audio = document.getElementById(id);
+            
+            if (audio.paused) {
+                audios.forEach(a => {
+                    if(a.id !== id) {
+                        a.pause();
+                        const b = a.nextElementSibling;
+                        if(b) b.innerHTML = b.innerHTML.replace('⏸️ Пауза', '▶️ Слушать');
+                    }
+                });
+                audio.play();
+                btn.innerHTML = btn.innerHTML.replace('▶️ Слушать', '⏸️ Пауза');
+            } else {
+                audio.pause();
+                btn.innerHTML = btn.innerHTML.replace('⏸️ Пауза', '▶️ Слушать');
+            }
+        }
+
+        // Text To Speech Login
+        let currentUtterance = null;
+        function speakStory() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const btn = document.getElementById('tts-btn');
+                if (btn.classList.contains('playing')) {
+                    btn.classList.remove('playing');
+                    btn.innerHTML = '🔊 Прослушать сказку';
+                    return;
+                }
+                
+                // Set play state
+                btn.classList.add('playing');
+                btn.innerHTML = '⏹️ Остановить сказку';
+                
+                // Extract text avoiding the button text
+                const el = document.getElementById('story-output').cloneNode(true);
+                const buttonToRemove = el.querySelector('#tts-btn');
+                if(buttonToRemove) buttonToRemove.remove();
+                
+                const text = el.innerText || el.textContent;
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = 'ru-RU';
+                currentUtterance.rate = 0.9;
+                
+                const voices = window.speechSynthesis.getVoices();
+                const ruVoice = voices.find(v => v.lang.includes('ru'));
+                if (ruVoice) currentUtterance.voice = ruVoice;
+                
+                currentUtterance.onend = () => {
+                    btn.classList.remove('playing');
+                    btn.innerHTML = '🔊 Прослушать сказку';
+                };
+                
+                window.speechSynthesis.speak(currentUtterance);
+                
+                // Reward 
+                if (window.Gamification && window.Gamification.rewardQuiz) {
+                    window.Gamification.rewardQuiz(3); // 3 stars for listening
+                }
+            } else {
+                alert("Твой браузер не поддерживает аудио сказки :(");
+            }
+        }
+    </script>
     <script>
         // Показать нужную секцию
         function showSection(section) {
             document.getElementById('chat-section').style.display = section === 'chat' ? 'block' : 'none';
             document.getElementById('story-section').style.display = section === 'story' ? 'block' : 'none';
             document.getElementById('dream-section').style.display = section === 'dream' ? 'block' : 'none';
+            if (document.getElementById('sounds-section')) {
+                document.getElementById('sounds-section').style.display = section === 'sounds' ? 'block' : 'none';
+            }
         }
 
         // Отправка сообщения в чат

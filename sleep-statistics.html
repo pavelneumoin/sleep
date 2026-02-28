@@ -23,8 +23,14 @@
                         <li><a href="sleep-tips.html">💡 Советы</a></li>
                         <li><a href="sleep-statistics.html">📊 Статистика</a></li>
                         <li><a href="ai-helper.html">🤖 Облачко</a></li>
+                        <li><a href="sleep-quiz.html">🏆 Викторина</a></li>
                     </ul>
                 </nav>
+
+                <div class="user-stats" id="user-stats-container">
+                    <span class="stat-badge star-bg" title="Твои звёздочки">⭐ <span id="total-stars">0</span></span>
+                    <span class="stat-badge streak-bg" title="Дней подряд">🔥 <span id="current-streak">0</span></span>
+                </div>
             </div>
         </div>
     </header>
@@ -83,10 +89,13 @@
         </section>
 
         <section class="content-section">
-            <h2>Мой дневник сна 📔</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="margin: 0;">Мой дневник сна 📔</h2>
+                <button id="download-pdf-btn" class="back-link" style="margin-top: 0; padding: 0.6rem 1.2rem; font-size: 0.9rem; border: none; cursor: pointer;">📥 Скачать PDF</button>
+            </div>
             <p>Вот все твои записи о сне. Можешь посмотреть, когда ты спал лучше всего!</p>
 
-            <div class="sleep-history">
+            <div class="sleep-history" id="pdf-content-area" style="padding: 1rem; background: white; border-radius: 15px;">
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -142,6 +151,8 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/gamification.js"></script>
     <script src="js/main.js"></script>
     <script src="js/statistics.js"></script>
 </body>
