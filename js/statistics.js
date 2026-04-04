@@ -3,45 +3,57 @@
  * Отображение данных и графиков
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    loadStatistics();
-    loadHistory();
+document.addEventListener('DOMContentLoaded', async function () {
+    const history = await getSleepHistory();
+    loadStatistics(history);
+    loadHistory(history);
 });
 
-// Загрузка статистики
-function loadStatistics() {
-    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
-
-    if (history.length === 0) {
-        return;
+async function getSleepHistory() {
+    try {
+        const response = await window.apiFetch('/sleep');
+        return response.success && response.records ? response.records : [];
+    } catch (e) {
+        return [];
     }
+}
 
+// Загрузка статистики
+function loadStatistics(history) {
     // Берём записи за последнюю неделю
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
     const weekRecords = history.filter(r => new Date(r.date) >= weekAgo);
 
-    if (weekRecords.length > 0) {
-        // Средняя продолжительность
-        const avgDuration = weekRecords.reduce((sum, r) => sum + parseFloat(r.duration), 0) / weekRecords.length;
-        document.getElementById('avg-sleep').textContent = avgDuration.toFixed(1) + ' ч';
-
-        // Средняя эффективность
-        const avgEfficiency = weekRecords.reduce((sum, r) => sum + r.efficiency, 0) / weekRecords.length;
-        document.getElementById('avg-efficiency').textContent = Math.round(avgEfficiency) + '%';
-
-        // Среднее качество
-        const avgQuality = weekRecords.reduce((sum, r) => sum + r.quality, 0) / weekRecords.length;
-        document.getElementById('avg-quality').textContent = avgQuality.toFixed(1);
-
-        // Регулярность (сколько дней из 7 есть записи)
-        const consistency = Math.round((weekRecords.length / 7) * 100);
-        document.getElementById('consistency').textContent = consistency + '%';
-
-        // Строим графики
-        buildDurationChart(weekRecords);
-        buildQualityChart(weekRecords);
+    if (weekRecords.length === 0) {
+        if (document.getElementById('avg-sleep')) document.getElementById('avg-sleep').textContent = '—';
+        if (document.getElementById('avg-efficiency')) document.getElementById('avg-efficiency').textContent = '—';
+        if (document.getElementById('avg-quality')) document.getElementById('avg-quality').textContent = '—';
+        if (document.getElementById('consistency')) document.getElementById('consistency').textContent = '—';
+        buildDurationChart([]);
+        buildQualityChart([]);
+        return;
     }
+
+    // Средняя продолжительность
+    const avgDuration = weekRecords.reduce((sum, r) => sum + parseFloat(r.duration), 0) / weekRecords.length;
+    document.getElementById('avg-sleep').textContent = avgDuration.toFixed(1) + ' ч';
+
+    // Средняя эффективность
+    const avgEfficiency = weekRecords.reduce((sum, r) => sum + r.efficiency, 0) / weekRecords.length;
+    document.getElementById('avg-efficiency').textContent = Math.round(avgEfficiency) + '%';
+
+    // Среднее качество
+    const avgQuality = weekRecords.reduce((sum, r) => sum + r.quality, 0) / weekRecords.length;
+    document.getElementById('avg-quality').textContent = avgQuality.toFixed(1);
+
+    // Регулярность (сколько дней из 7 есть записи)
+    const consistency = Math.round((weekRecords.length / 7) * 100);
+    document.getElementById('consistency').textContent = consistency + '%';
+
+    // Строим графики
+    buildDurationChart(weekRecords);
+    buildQualityChart(weekRecords);
 }
 
 // График продолжительности сна
@@ -117,8 +129,7 @@ function buildQualityChart(records) {
 }
 
 // Загрузка истории
-function loadHistory() {
-    const history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+function loadHistory(history) {
     const tbody = document.getElementById('sleep-history-body');
     const noDataMessage = document.getElementById('no-history-message');
 
@@ -168,3 +179,37 @@ function loadHistory() {
 
     tbody.innerHTML = html;
 }
+
+
+// Экспорт PDF
+document.addEventListener('DOMContentLoaded', () => {
+    const downloadBtn = document.getElementById('download-pdf-btn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            const element = document.getElementById('pdf-content-area');
+            const opt = {
+                margin: 10,
+                filename: 'sonotracker-report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            downloadBtn.textContent = '⏳ Генерация...';
+            downloadBtn.disabled = true;
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                downloadBtn.textContent = '📥 Скачать PDF';
+                downloadBtn.disabled = false;
+
+                // Награда за экспорт
+                if (window.Gamification && window.Gamification.rewardQuiz) {
+                    window.Gamification.rewardQuiz(2);
+                }
+            }).catch(err => {
+                console.error(err);
+                downloadBtn.textContent = '❌ Ошибка';
+            });
+        });
+    }
+});

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - СоноТрекер 🌙</title>
+    <link rel="stylesheet" href="css/styles.css?v=2.0">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .auth-container h1 {
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .auth-form input {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .auth-form input:focus {
+            border-color: var(--primary-purple);
+            outline: none;
+        }
+
+        .auth-form button {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+
+        .auth-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 126, 217, 0.4);
+        }
+
+        .auth-links {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .auth-links a {
+            color: var(--primary-purple);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .auth-error {
+            color: #d63031;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        header .user-stats,
+        header nav {
+            display: none;
+            /* Hide nav and stats on auth pages */
+        }
+    </style>
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#9b7ed9">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content" style="justify-content: center;">
+                <div class="logo">
+                    <img src="images/mascot.png" alt="Облачко" class="logo-icon">
+                    СоноТрекер
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="auth-container">
+            <h1>Добро пожаловать! ✨</h1>
+            <p>Создай аккаунт для сохранения своих снов</p>
+
+            <form class="auth-form" id="register-form">
+                <input type="text" id="username" placeholder="Придумай имя" required>
+                <input type="password" id="password" placeholder="Пароль" required>
+                <input type="password" id="password-confirm" placeholder="Повтори пароль" required>
+                <button type="submit">Создать аккаунт</button>
+                <div class="auth-error" id="register-error">Ошибка регистрации</div>
+            </form>
+
+            <div class="auth-links">
+                Уже есть аккаунт? <a href="login.html">Войти</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('password-confirm').value;
+            const errorElement = document.getElementById('register-error');
+            const submitButton = e.target.querySelector('button');
+
+            if (password !== passwordConfirm) {
+                errorElement.textContent = 'Пароли не совпадают!';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            try {
+                submitButton.textContent = 'Загрузка...';
+                submitButton.disabled = true;
+
+                const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000/api/register'
+                    : '/api/register';
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('sonotracker_token', data.token);
+                    localStorage.setItem('sonotracker_username', data.username);
+                    window.location.href = 'index.html';
+                } else {
+                    errorElement.textContent = data.error || 'Ошибка регистрации';
+                    errorElement.style.display = 'block';
+                }
+            } catch (err) {
+                errorElement.textContent = 'Ошибка сети. Проверьте подключение.';
+                errorElement.style.display = 'block';
+            } finally {
+                submitButton.textContent = 'Создать аккаунт';
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+<script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('ServiceWorker registered'))
+                .catch(err => console.log('ServiceWorker failed: ', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

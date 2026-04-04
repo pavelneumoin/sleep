@@ -115,40 +115,42 @@ function calculateSleep() {
         notes: notes
     });
 
+    // Начисляем звёздочки
+    if (window.Gamification) {
+        window.Gamification.rewardSleep(new Date().toISOString().split('T')[0]);
+    }
+
     // Сохраняем последние значения времени
     localStorage.setItem('lastSleepTime', sleepTime);
     localStorage.setItem('lastWakeTime', wakeTime);
 }
 
 // Сохранение записи о сне
-function saveSleepRecord(record) {
-    let history = JSON.parse(localStorage.getItem('sleepHistory') || '[]');
-
-    // Проверяем, нет ли уже записи за сегодня
-    const todayIndex = history.findIndex(r => r.date === record.date);
-    if (todayIndex >= 0) {
-        history[todayIndex] = record; // Обновляем
-    } else {
-        history.unshift(record); // Добавляем в начало
+async function saveSleepRecord(record) {
+    try {
+        await window.apiFetch('/sleep', {
+            method: 'POST',
+            body: JSON.stringify(record)
+        });
+        console.log('💾 Запись сохранена на сервере:', record);
+    } catch (e) {
+        console.error('Ошибка сохранения сна:', e);
     }
-
-    // Храним только последние 30 записей
-    if (history.length > 30) {
-        history = history.slice(0, 30);
-    }
-
-    localStorage.setItem('sleepHistory', JSON.stringify(history));
-    console.log('💾 Запись сохранена:', record);
 }
 
 // Получение истории сна
-function getSleepHistory() {
-    return JSON.parse(localStorage.getItem('sleepHistory') || '[]');
+async function getSleepHistory() {
+    try {
+        const response = await window.apiFetch('/sleep');
+        return response.success && response.records ? response.records : [];
+    } catch (e) {
+        return [];
+    }
 }
 
 // Получение статистики за неделю
-function getWeeklyStats() {
-    const history = getSleepHistory();
+async function getWeeklyStats() {
+    const history = await getSleepHistory();
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
 

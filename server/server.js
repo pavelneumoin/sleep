@@ -6,6 +6,7 @@
 const http = require('http');
 const https = require('https');
 const url = require('url');
+const db = require('./database.js');
 
 // ========================================
 // КОНФИГУРАЦИЯ YANDEX CLOUD
@@ -65,20 +66,20 @@ async function askYandexGPT(userMessage, context = 'sleep_helper') {
     const systemPrompts = {
         sleep_helper: `Ты — дружелюбное сонное облачко по имени Соня, помощник для детей 6-12 лет на сайте СоноТрекер. 
 Твоя задача — отвечать на вопросы о сне простым, понятным языком для детей.
-Используй эмодзи в ответах. Будь добрым и заботливым.
-Отвечай кратко (2-4 предложения), но информативно.
-Если вопрос не о сне — мягко верни разговор к теме сна.`,
+Используй эмодзи в ответах. Будь добрым, чутким и заботливым.
+Отвечай кратко (2-4 предложения).
+ВАЖНОЕ ПРАВИЛО БЕЗОПАСНОСТИ: Если ребёнок задаёт вопросы на опасные, пугающие темы или жалуется на самочувствие, мягко попроси его обратиться к родителям и откажись обсуждать эти темы.`,
 
         story_generator: `Ты — волшебный рассказчик сказок на ночь. 
 Создавай короткие, добрые сказки (3-5 абзацев) для детей.
-Сказки должны быть успокаивающими и помогать заснуть.
-Используй мягкие образы: облака, звёзды, луна, добрые животные.
-В конце сказки герой всегда засыпает сладким сном.`,
+ПРАВИЛО: никаких злодеев, конфликтов, монстров и страшного.
+Только успокаивающие мягкие образы: облака, звёзды, луна, сонные милые животные.
+В конце сказки герой всегда сладко засыпает.`,
 
         dream_interpreter: `Ты — добрый толкователь снов для детей.
-Объясняй сны позитивно и успокаивающе.
-Никогда не пугай ребёнка — даже страшные сны объясняй как что-то хорошее.
-Говори простым языком с эмодзи.`
+Объясняй сны максимально безопасно, позитивно и успокаивающе.
+Если сон страшный (кошмар), мягко заверь ребёнка, что это лишь плохая картинка, которая уже улетела, и добавь к сну смешной или приятный финал.
+Никогда не используй пугающие образы.`
     };
 
     const requestBody = {
@@ -218,6 +219,128 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ success: false, error: error.message }));
             }
         });
+        return;
+    }
+
+    // ========================================
+    // DATABASE ENDPOINTS
+    // ========================================
+
+    async function authenticate() {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Unauthorized' }));
+            return null;
+        }
+        const token = authHeader.split(' ')[1];
+        const user = await db.getUserByToken(token);
+        if (!user) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Invalid token' }));
+            return null;
+        }
+        return user;
+    }
+
+    if (req.method === 'POST' && parsedUrl.pathname === '/api/register') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const { username, password } = JSON.parse(body);
+                if (!username || !password) throw new Error('Имя пользователя и пароль обязательны');
+                const result = await db.registerUser(username, password);
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: true, ...result }));
+            } catch (error) {
+                res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: false, error: error.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.method === 'POST' && parsedUrl.pathname === '/api/login') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const { username, password } = JSON.parse(body);
+                const result = await db.loginUser(username, password);
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: true, ...result }));
+            } catch (error) {
+                res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: false, error: error.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.method === 'GET' && parsedUrl.pathname === '/api/user') {
+        const user = await authenticate();
+        if (!user) return;
+        try {
+            const stats = await db.getUserStats(user.id);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: true, username: user.username, stats }));
+        } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: false, error: error.message }));
+        }
+        return;
+    }
+
+    if (req.method === 'POST' && parsedUrl.pathname === '/api/quiz-reward') {
+        const user = await authenticate();
+        if (!user) return;
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const { stars } = JSON.parse(body);
+                const stats = await db.addStars(user.id, stars || 0);
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: true, stats }));
+            } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: false, error: error.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.method === 'POST' && parsedUrl.pathname === '/api/sleep') {
+        const user = await authenticate();
+        if (!user) return;
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const recordData = JSON.parse(body);
+                await db.addSleepRecord(user.id, recordData);
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(JSON.stringify({ success: false, error: error.message }));
+            }
+        });
+        return;
+    }
+
+    if (req.method === 'GET' && parsedUrl.pathname === '/api/sleep') {
+        const user = await authenticate();
+        if (!user) return;
+        try {
+            const records = await db.getSleepRecords(user.id);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: true, records }));
+        } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: false, error: error.message }));
+        }
         return;
     }
 

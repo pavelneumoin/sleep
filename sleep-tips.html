@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Советы для сна - СоноТрекер 💡</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2.0">
+<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#9b7ed9">
 </head>
 
 <body>
@@ -23,8 +25,16 @@
                         <li><a href="sleep-tips.html">💡 Советы</a></li>
                         <li><a href="sleep-statistics.html">📊 Статистика</a></li>
                         <li><a href="ai-helper.html">🤖 Облачко</a></li>
+                        <li><a href="sleep-quiz.html">🏆 Викторина</a></li>
+                        <li><a href="relax.html">🎵 Релакс</a></li>
+                        <li><a href="#" id="theme-toggle">🌙 Тема</a></li>
                     </ul>
                 </nav>
+
+                <div class="user-stats" id="user-stats-container">
+                    <span class="stat-badge star-bg" title="Твои звёздочки">⭐ <span id="total-stars">0</span></span>
+                    <span class="stat-badge streak-bg" title="Дней подряд">🔥 <span id="current-streak">0</span></span>
+                </div>
             </div>
         </div>
     </header>
@@ -173,7 +183,18 @@
         </div>
     </footer>
 
+    <script src="js/gamification.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/main.js"></script>
+<script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('ServiceWorker registered'))
+                .catch(err => console.log('ServiceWorker failed: ', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

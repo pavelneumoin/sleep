@@ -1,14 +1,25 @@
-# Конфиденциальные файлы - НЕ загружать на GitHub!
-# server/ убран для деплоя на Render (API ключи в переменных окружения)
+# Учетные данные
 *.env
 config.js
 secrets.js
+api.txt
+
+# SSH ключи
+ssh*
+*.zip
+ssh_extracted/
+extracted_key/
+ssh_key_worksheet/
 
 # Node.js
 node_modules/
 package-lock.json
 
-# Системные файлы
-.DS_Store
-Thumbs.db
+# Локальные скрипты запуска
+run_server.py
+start_server.bat
+start.bat
 *.log
+
+# База данных
+server/sonotracker.db

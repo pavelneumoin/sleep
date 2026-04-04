@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>InterviewAI Pro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .pricing-section { text-align: center; margin-top: 2rem; }
+        .pricing-card { background: var(--bg-soft); border: 2px solid var(--primary-pink); padding: 2rem; border-radius: var(--border-radius-lg); max-width: 400px; margin: 2rem auto; box-shadow: var(--shadow-hover); }
+        .price { font-size: 3rem; font-weight: 800; color: var(--text-dark); margin: 1rem 0; }
+        .buy-btn { width: 100%; padding: 1rem; border-radius: var(--border-radius); background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink)); color: white; font-weight: bold; border: none; cursor: pointer; transition: transform 0.2s; font-size: 1.2rem; }
+        .buy-btn:hover { transform: translateY(-3px); }
+        .features { text-align: left; margin: 2rem 0; list-style: none; padding: 0; }
+        .features li { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="material-symbols-rounded">terminal</span> InterviewAI
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">🏠 На главную</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container pricing-section">
+        <h1>Прокачай свои харды с PRO</h1>
+        <p>Получи доступ к безлимитному Senior ИИ-интервьюеру и System Design задачам.</p>
+        
+        <div class="pricing-card">
+            <h3>Подписка InterviewAI PRO</h3>
+            <div class="price">100 💎</div>
+            <p>или $9.99 / месяц</p>
+            
+            <ul class="features">
+                <li><span class="material-symbols-rounded" style="color:var(--primary-mint)">check_circle</span> Безлимитное время микрофона</li>
+                <li><span class="material-symbols-rounded" style="color:var(--primary-mint)">check_circle</span> Вопросы уровня Staff/Principal</li>
+                <li><span class="material-symbols-rounded" style="color:var(--primary-mint)">check_circle</span> Ревью архитектуры (Media upload)</li>
+            </ul>
+            
+            <button class="buy-btn" onclick="buyPro()">Купить за коины (💎)</button>
+        </div>
+    </main>
+    
+    <script>
+        function buyPro() {
+            let stars = parseInt(localStorage.getItem('total_stars') || '0');
+            if (stars >= 100) {
+                localStorage.setItem('total_stars', stars - 100);
+                alert("Поздравляем! Вы приобрели PRO подписку. Развивайтесь быстрее! 🚀");
+                window.location.href = 'index.html';
+            } else {
+                alert(`Недостаточно коинов (у вас ${stars} 💎). Добывайте их в собеседованиях!`);
+            }
+        }
+    </script>
+</body>
+</html>
