@@ -3,27 +3,24 @@
  * Интеграция с YandexGPT через сервер (локальный или Render)
  */
 
-// URL серверов
-const LOCAL_SERVER = 'http://localhost:3000';
-let AI_SERVER = LOCAL_SERVER; // По умолчанию локальный
+// Используем относительный путь для продакшена (Nginx проксирует /api/ на локальный Node.js)
+let AI_SERVER = '';
 
 // Проверка доступности сервера
 async function checkAIServer() {
-    // Пробуем локальный сервер
     try {
-        const response = await fetch(`${LOCAL_SERVER}/api/health`, {
-            signal: AbortSignal.timeout(3000)
+        const response = await fetch(`${AI_SERVER}/api/health`, {
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
         });
         const data = await response.json();
         if (data.status === 'ok') {
-            AI_SERVER = LOCAL_SERVER;
-            console.log('✅ Подключён к локальному серверу');
+            console.log('✅ Подключён к локальному серверу через Nginx');
             return true;
         }
     } catch (error) {
-        console.log('Локальный сервер недоступен');
+        console.log('Сервер недоступен', error);
     }
-
     return false;
 }
 

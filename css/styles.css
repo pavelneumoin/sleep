@@ -25,19 +25,6 @@
     --transition: all 0.3s ease;
 }
 
-/* Тёмная тема */
-body.dark-mode {
-    --bg-lavender: #2d1b4e;
-    --bg-soft: #1a1033;
-    --text-dark: #f5f0ff;
-    --text-soft: #b8a8c8;
-    --white: #2d1b4e;
-    --primary-purple: #cbbdf0;
-    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
-}
-
-
 /* Сброс и базовые стили */
 * {
     margin: 0;
@@ -85,11 +72,6 @@ header {
     z-index: 1000;
     box-shadow: var(--shadow-soft);
     border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
-    transition: transform 0.3s ease-in-out;
-}
-
-header.header-hidden {
-    transform: translateY(-100%);
 }
 
 .container {
@@ -136,13 +118,13 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: 700;
-    padding: 0.4rem 0.6rem;
-    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    border-radius: 50px;
     transition: var(--transition);
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.4rem;
     white-space: nowrap;
 }
 
@@ -181,14 +163,9 @@ main {
 /* Маскот */
 .mascot {
     width: 120px;
-    height: 120px;
+    height: auto;
     margin: 0 auto 1rem;
     display: block;
-    background: white;
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    object-fit: contain;
 }
 
 .mascot-small {
@@ -310,14 +287,13 @@ select {
     font-family: inherit;
     transition: var(--transition);
     background: var(--bg-soft);
-    color: var(--text-dark);
 }
 
 input:focus,
 select:focus {
     outline: none;
     border-color: var(--primary-purple);
-    background: var(--white);
+    background: white;
     box-shadow: 0 0 0 4px rgba(155, 126, 217, 0.2);
 }
 
@@ -1113,32 +1089,6 @@ footer::before {
 
     .stat-card:hover {
         transform: translateY(-5px);
-    }
-}
-
-@media (max-width: 360px) {
-    .user-stats {
-        flex-direction: column;
-        gap: 0.4rem;
-        width: 100%;
-    }
-
-    .stat-badge {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .logo {
-        font-size: 1.4rem;
-    }
-
-    .tracker-form button {
-        padding: 0.8rem 1rem;
-        font-size: 1rem;
-    }
-
-    input, select {
-        padding: 0.8rem 1rem;
     }
 }
 

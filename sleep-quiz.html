@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Викторина о сне - СоноТрекер 🏆</title>
     <link rel="stylesheet" href="css/styles.css?v=2.0">
+    <link rel="stylesheet" href="css/v2.css?v=2.0">
     <style>
         .quiz-container {
             background: white;
@@ -67,8 +68,6 @@
             width: 100%;
         }
     </style>
-<link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#9b7ed9">
 </head>
 
 <body>
@@ -87,8 +86,6 @@
                         <li><a href="sleep-statistics.html">📊 Статистика</a></li>
                         <li><a href="ai-helper.html">🤖 Облачко</a></li>
                         <li><a href="sleep-quiz.html">🏆 Викторина</a></li>
-                        <li><a href="relax.html">🎵 Релакс</a></li>
-                        <li><a href="#" id="theme-toggle">🌙 Тема</a></li>
                     </ul>
                 </nav>
                 <div class="user-stats" id="user-stats-container">
@@ -120,15 +117,7 @@
 
     <script src="js/gamification.js"></script>
     <script src="js/quiz.js"></script>
-<script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('ServiceWorker registered'))
-                .catch(err => console.log('ServiceWorker failed: ', err));
-            });
-        }
-    </script>
+    <script src="js/v2.js?v=2.0" defer></script>
 </body>
 
 </html>

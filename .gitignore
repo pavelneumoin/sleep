@@ -1,25 +1,35 @@
-# Учетные данные
-*.env
-config.js
-secrets.js
-api.txt
-
-# SSH ключи
-ssh*
-*.zip
-ssh_extracted/
-extracted_key/
-ssh_key_worksheet/
-
-# Node.js
+# Dependencies
 node_modules/
-package-lock.json
+venv/
+__pycache__/
+*.pyc
+*.pyo
 
-# Локальные скрипты запуска
-run_server.py
-start_server.bat
-start.bat
+# Secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
 *.log
+gunicorn.log
+gunicorn.ctl
 
-# База данных
-server/sonotracker.db
+# Editor
+.idea/
+.vscode/
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Backups
+backups/
+*.bak
+*.old

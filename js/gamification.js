@@ -52,56 +52,7 @@ function updateGamificationUI() {
     if (streakEl) {
         streakEl.textContent = data.streak;
     }
-    
-    updateRewardsUI(data.stars);
 }
-
-// Обновление шкалы наград (Дорога Наград)
-function updateRewardsUI(stars) {
-    const fill = document.getElementById('reward-progress-fill');
-    if (fill) {
-        // Максимальная шкала = 50 звезд
-        let percentage = (stars / 50) * 100;
-        if (percentage > 100) percentage = 100;
-        fill.style.width = percentage + '%';
-        
-        // Кнопка 10 звезд
-        const btn10 = document.getElementById('claim-btn-10');
-        const icon10 = document.getElementById('reward-icon-10');
-        if (btn10 && icon10) {
-            if (stars >= 10) {
-                btn10.disabled = false;
-                btn10.textContent = 'Открыть!';
-                btn10.classList.add('primary-btn');
-                btn10.classList.remove('secondary-btn');
-                icon10.textContent = '🎁';
-            }
-        }
-        
-        // Кнопка 30 звезд
-        const btn30 = document.getElementById('claim-btn-30');
-        const icon30 = document.getElementById('reward-icon-30');
-        if (btn30 && icon30) {
-            if (stars >= 30) {
-                btn30.disabled = false;
-                btn30.textContent = 'Открыть!';
-                btn30.classList.add('primary-btn');
-                btn30.classList.remove('secondary-btn');
-                icon30.textContent = '🎁';
-            }
-        }
-    }
-}
-
-window.claimReward = function(cost, redirectUrl) {
-    const data = getGamificationData();
-    if (data.stars >= cost) {
-        showRewardNotification(`Ура! Ты открыл новую награду! 🎉`);
-        setTimeout(() => {
-            window.location.href = redirectUrl;
-        }, 1500);
-    }
-};
 
 // Вызывается при сохранении сна
 function rewardForSleepRecord(dateStr) {

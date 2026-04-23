@@ -1,17 +1,14 @@
 module.exports = {
-  apps: [{
-    name: 'sonotracker-api',
-    script: 'server/server.js',
-    instances: 1,
-    autorestart: true,
-    watch: false,
-    max_memory_restart: '1G',
-    env: {
-      NODE_ENV: 'development'
-    },
-    env_production: {
-      NODE_ENV: 'production',
-      PORT: 3000
-    }
-  }]
+    apps: [{
+        name: 'sonotracker',
+        script: 'server/server.js',
+        cwd: '/home/pavel/projects/arina-project',
+        interpreter: 'node',
+        env: {
+            NODE_ENV: 'production',
+            PORT: 3000,
+            YANDEX_FOLDER_ID: "b1grml8kquv3uh21478n",
+            YANDEX_API_KEY: process.env.YANDEX_API_KEY || ''
+        }
+    }]
 };

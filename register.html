@@ -84,8 +84,6 @@
             /* Hide nav and stats on auth pages */
         }
     </style>
-<link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#9b7ed9">
 </head>
 
 <body>
@@ -166,15 +164,6 @@
                 submitButton.disabled = false;
             }
         });
-    </script>
-<script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('ServiceWorker registered'))
-                .catch(err => console.log('ServiceWorker failed: ', err));
-            });
-        }
     </script>
 </body>
 
