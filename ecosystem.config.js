@@ -7,8 +7,8 @@ module.exports = {
         env: {
             NODE_ENV: 'production',
             PORT: 3000,
-            YANDEX_FOLDER_ID: "b1grml8kquv3uh21478n",
-            YANDEX_API_KEY: process.env.YANDEX_API_KEY || ''
+            YANDEX_FOLDER_ID: process.env.YANDEX_FOLDER_ID || "",
+            YANDEX_API_KEY: process.env.YANDEX_API_KEY || ""
         }
     }]
 };

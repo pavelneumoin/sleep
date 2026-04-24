@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>СоноТрекер — твой облачный друг 💤</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#6a4fb8">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Comfortaa:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1d1540;
+    --ink-s:      #4a3d7a;
+    --ink-mute:   #8a7bb0;
+    --lav:        #8b6fd4;
+    --lav-d:      #6a4fb8;
+    --lav-l:      #c2b1ed;
+    --peach:      #ffb891;
+    --peach-d:    #ff9a6a;
+    --pink:       #ffb0c8;
+    --mint:       #8fd6bd;
+    --mint-d:     #5cbd9e;
+    --sun:        #ffd166;
+    --sun-d:      #c99a3c;
+    --night1:     #2a1f4a;
+    --night2:     #3d2a6b;
+    --ring:       rgba(106,79,184,.14);
+    --shadow:     0 12px 34px rgba(106,79,184,.12);
+    --card:       #ffffff;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 500px at 10% -5%, #f4e6ff 0%, transparent 60%),
+      radial-gradient(700px 500px at 100% 10%, #ffe8d9 0%, transparent 55%),
+      linear-gradient(180deg, #fbf6ff 0%, #fff7f0 55%, #f3eeff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  h1, h2, h3 { font-family: 'Comfortaa', 'Nunito', sans-serif; margin: 0; }
+
+  #app {
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    padding: 0 16px 104px;
+  }
+
+  /* === Header === */
+  .top {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 4px 10px;
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, rgba(251,246,255,0.96), rgba(251,246,255,0.85));
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .logo { font-family: 'Comfortaa', sans-serif; font-weight: 900; font-size: 18px; display: flex; align-items: center; gap: 6px; }
+  .logo .moon { font-size: 22px; filter: drop-shadow(0 2px 4px rgba(106,79,184,.2)); }
+  .spacer { flex: 1; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #fff; border: 1.5px solid var(--ring); border-radius: 999px;
+    padding: 6px 10px; font-size: 13px; font-weight: 800; color: var(--ink);
+  }
+  .chip.star { background: linear-gradient(135deg, #fff8df, #ffeaa8); border-color: rgba(201,154,60,.28); }
+  .chip.fire { background: linear-gradient(135deg, #ffe2e8, #ffc6d6); border-color: rgba(225,29,72,.18); color: #8a1f3a; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #fff; border: 1.5px solid var(--ring);
+    display: grid; place-items: center; font-size: 16px; color: var(--ink-s);
+  }
+
+  /* === Hero === */
+  .hero {
+    margin-top: 6px;
+    background:
+      radial-gradient(300px 160px at 50% 30%, rgba(196,170,255,.35), transparent 70%),
+      linear-gradient(135deg, #efe5ff 0%, #ffe4f1 50%, #fff4e1 100%);
+    border-radius: 30px; padding: 20px 18px 24px;
+    position: relative; overflow: hidden;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    box-shadow: var(--shadow);
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 12px; right: 14px;
+    width: 6px; height: 6px; border-radius: 50%; background: #fff;
+    box-shadow: -30px 10px 0 -2px #fff, 18px 30px 0 -3px #fff, -60px 40px 0 -2px #fff, 40px 8px 0 -3px #fff;
+    opacity: .8; animation: tw 3s ease-in-out infinite;
+  }
+  @keyframes tw { 0%,100%{opacity:.5} 50%{opacity:1} }
+  .greet { font-size: 13px; font-weight: 800; color: var(--ink-s); margin-bottom: 2px; }
+  .greet .name { color: var(--lav-d); }
+  .cloud-wrap { display: grid; place-items: center; margin: 8px 0 14px; position: relative; }
+  .cloud { width: 180px; height: 140px; animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-6px) rotate(1deg); } }
+  .cloud-msg {
+    position: absolute; top: 6px; right: 18px; background: #fff;
+    border: 1.5px solid var(--ring); border-radius: 14px; padding: 6px 10px;
+    font-size: 11.5px; font-weight: 800; color: var(--ink-s); max-width: 150px;
+    animation: pop .4s ease-out;
+  }
+  .cloud-msg::after {
+    content: ''; position: absolute; bottom: -7px; left: 18px;
+    width: 12px; height: 12px; background: #fff;
+    border-right: 1.5px solid var(--ring); border-bottom: 1.5px solid var(--ring);
+    transform: rotate(45deg);
+  }
+  @keyframes pop { from {opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+  .title-row { text-align: center; margin-bottom: 14px; }
+  .title-row .big { font-size: 22px; font-weight: 900; color: var(--ink); }
+  .title-row .small { font-size: 13px; font-weight: 700; color: var(--ink-s); margin-top: 2px; }
+
+  /* === Main big button === */
+  .main-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 18px 20px; border-radius: 22px;
+    font-size: 18px; font-weight: 900; color: #fff; border: none;
+    position: relative; overflow: hidden;
+    box-shadow: 0 8px 0 rgba(106,79,184,.3), 0 14px 30px rgba(106,79,184,.22);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .main-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(106,79,184,.3); }
+  .main-btn.night { background: linear-gradient(135deg, #6a4fb8 0%, #8b6fd4 60%, #c2b1ed 100%); }
+  .main-btn.morning {
+    background: linear-gradient(135deg, #ff9a6a 0%, #ffd166 80%);
+    box-shadow: 0 8px 0 rgba(201,154,60,.35), 0 14px 30px rgba(255,154,106,.28);
+    color: #4a2a08;
+  }
+  .main-btn.morning:active { box-shadow: 0 4px 0 rgba(201,154,60,.35); }
+  .main-btn .emo { font-size: 22px; }
+  .main-btn-hint { text-align: center; font-size: 12px; color: var(--ink-mute); margin-top: 8px; font-weight: 700; }
+
+  /* === Flow pickers === */
+  .flow-step {
+    margin-top: 14px; background: #fff; border-radius: 22px;
+    padding: 16px; border: 1.5px solid var(--ring); animation: pop .3s ease-out;
+  }
+  .flow-step h3 { font-size: 16px; font-weight: 800; text-align: center; margin-bottom: 10px; }
+  .flow-step .sub { text-align: center; font-size: 12px; color: var(--ink-mute); margin-bottom: 12px; }
+  .picker-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .picker-btn {
+    flex: 1; min-width: 70px; max-width: 120px;
+    background: #fff; border: 2.5px solid var(--ring); border-radius: 18px;
+    padding: 14px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 800; color: var(--ink-s); transition: all .15s;
+  }
+  .picker-btn .big { font-size: 30px; }
+  .picker-btn:hover { transform: translateY(-2px); }
+  .picker-btn.on {
+    border-color: var(--lav);
+    background: linear-gradient(135deg, #f4ecff, #ffe4f1);
+    color: var(--lav-d);
+    box-shadow: 0 6px 18px rgba(106,79,184,.2);
+  }
+  .flow-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .flow-actions button { flex: 1; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 800; border: none; }
+  .flow-actions .save { background: linear-gradient(135deg, var(--mint), var(--mint-d)); color: #0d3b2c; box-shadow: 0 4px 0 #4a9c82; }
+  .flow-actions .back { background: #f3ecff; color: var(--ink-s); }
+  .duration-show { text-align: center; margin-bottom: 12px; font-size: 13px; color: var(--ink-s); }
+  .duration-show .d {
+    font-size: 32px; font-weight: 900;
+    background: linear-gradient(135deg, var(--lav-d), var(--peach));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* === Sections === */
+  .section { margin-top: 22px; }
+  .section-h { display: flex; align-items: baseline; gap: 10px; margin: 0 4px 10px; }
+  .section-h h2 { font-size: 18px; font-weight: 900; }
+  .section-h .hint { font-size: 11.5px; color: var(--ink-mute); font-weight: 700; }
+
+  /* === Weekly Challenge === */
+  .wc-card {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #fff8e0 0%, #ffe8d0 50%, #ffd9e6 100%);
+    border: 2px solid rgba(255,161,90,.35);
+    border-radius: 22px;
+    padding: 12px 14px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 10px 24px rgba(255,154,106,.16);
+  }
+  .wc-card::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+    transform: translateX(-100%); animation: wcshine 4s ease-in-out infinite;
+  }
+  @keyframes wcshine { 0%,100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
+  .wc-card.wc-done {
+    background: linear-gradient(135deg, #d8f5e5 0%, #c4f2d9 100%);
+    border-color: rgba(92,189,158,.5);
+  }
+  .wc-label {
+    display: inline-block; font-size: 10.5px; font-weight: 900; letter-spacing: 1.2px;
+    color: #fff; background: linear-gradient(135deg, #ff9a6a, #ff7a9d);
+    padding: 3px 10px; border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .wc-card.wc-done .wc-label { background: linear-gradient(135deg, #5cbd9e, #3d9a7e); }
+  .wc-main { display: flex; gap: 12px; align-items: flex-start; position: relative; }
+  .wc-icon {
+    font-size: 38px; flex-shrink: 0;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,.12));
+    animation: wcbob 2.4s ease-in-out infinite;
+  }
+  @keyframes wcbob {
+    0%,100% { transform: translateY(0) rotate(-4deg); }
+    50%     { transform: translateY(-3px) rotate(4deg); }
+  }
+  .wc-body { flex: 1; min-width: 0; }
+  .wc-title { font-size: 15px; font-weight: 900; color: var(--ink); line-height: 1.2; margin-bottom: 2px; }
+  .wc-desc { font-size: 12px; color: var(--ink-s); font-weight: 700; margin-bottom: 8px; line-height: 1.35; }
+  .wc-bar { height: 9px; background: rgba(255,255,255,.7); border-radius: 999px; overflow: hidden; margin-bottom: 5px; border: 1px solid rgba(0,0,0,.05); }
+  .wc-bar-fill {
+    height: 100%; background: linear-gradient(90deg, #ffd166, #ff9a6a);
+    border-radius: 999px; transition: width .4s;
+  }
+  .wc-card.wc-done .wc-bar-fill { background: linear-gradient(90deg, #8fd6bd, #5cbd9e); }
+  .wc-foot { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 800; color: var(--ink-s); }
+  .wc-reward { color: var(--sun-d); }
+  .wc-card.wc-done .wc-reward { color: var(--mint-d); }
+
+  /* === Levels === */
+  .levels-scroll {
+    display: flex; gap: 12px; overflow-x: auto;
+    padding: 2px 4px 14px; scroll-snap-type: x mandatory; scrollbar-width: none;
+  }
+  .levels-scroll::-webkit-scrollbar { display: none; }
+  .lvl-card {
+    flex: 0 0 170px; scroll-snap-align: start;
+    background: #fff; border: 2px solid var(--ring); border-radius: 22px;
+    padding: 14px 14px 12px; position: relative; transition: all .2s;
+  }
+  .lvl-card.done {
+    background: linear-gradient(135deg, #e8fbf0, #c4f2d9);
+    border-color: rgba(92,189,158,.4);
+  }
+  .lvl-card.locked { opacity: .55; filter: grayscale(.3); }
+  .lvl-icon { font-size: 30px; filter: drop-shadow(0 3px 6px rgba(106,79,184,.2)); }
+  .lvl-card.done .lvl-icon::after {
+    content: '✓'; position: absolute; top: 10px; right: 12px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--mint-d); color: #fff;
+    display: grid; place-items: center; font-weight: 900; font-size: 12px;
+  }
+  .lvl-num { display: inline-block; background: var(--lav-l); color: var(--lav-d); font-size: 10px; font-weight: 900; padding: 2px 7px; border-radius: 999px; margin-bottom: 4px; letter-spacing: .5px; }
+  .lvl-name { font-size: 14px; font-weight: 900; line-height: 1.15; margin-bottom: 2px; }
+  .lvl-desc { font-size: 11px; color: var(--ink-mute); font-weight: 700; line-height: 1.3; margin-bottom: 10px; min-height: 28px; }
+  .lvl-bar { height: 8px; background: #efe8ff; border-radius: 999px; overflow: hidden; margin-bottom: 6px; }
+  .lvl-bar-fill { height: 100%; background: linear-gradient(90deg, var(--lav), var(--peach)); border-radius: 999px; transition: width .4s; }
+  .lvl-card.done .lvl-bar-fill { background: linear-gradient(90deg, var(--mint), var(--mint-d)); }
+  .lvl-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: var(--ink-s); }
+  .lvl-foot .reward { color: var(--sun-d); }
+
+  /* === Constellation === */
+  .constellation-card {
+    background: linear-gradient(180deg, var(--night1) 0%, var(--night2) 100%);
+    border-radius: 24px; padding: 16px; color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .constellation-card::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(2px 2px at 20% 20%, rgba(255,255,255,.4), transparent),
+      radial-gradient(1.5px 1.5px at 70% 40%, rgba(255,255,255,.3), transparent),
+      radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,.35), transparent),
+      radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,.3), transparent);
+    pointer-events: none;
+  }
+  .cons-title { font-size: 14px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative; }
+  .cons-title .count { font-size: 12px; font-weight: 700; color: var(--lav-l); background: rgba(255,255,255,.08); padding: 3px 8px; border-radius: 999px; }
+  .cons-svg { width: 100%; height: 180px; display: block; }
+  .cons-caption { font-size: 11.5px; text-align: center; color: rgba(255,255,255,.75); margin-top: 6px; font-weight: 700; }
+  .cons-empty { text-align: center; padding: 30px 12px; color: rgba(255,255,255,.7); font-size: 13px; font-weight: 700; }
+
+  /* === History === */
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .log-card {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border: 1.5px solid var(--ring); border-radius: 16px;
+    padding: 12px 14px;
+  }
+  .log-emoji { font-size: 28px; flex-shrink: 0; }
+  .log-main { flex: 1; min-width: 0; }
+  .log-date { font-size: 12px; color: var(--ink-mute); font-weight: 700; }
+  .log-dur  { font-size: 15px; font-weight: 900; }
+  .log-time { font-size: 11px; color: var(--ink-s); margin-top: 2px; }
+  .log-quality { font-size: 22px; flex-shrink: 0; }
+  .empty-state {
+    text-align: center; padding: 22px 16px;
+    background: #fff; border: 1.5px dashed var(--ring); border-radius: 20px;
+    color: var(--ink-mute); font-size: 13px; font-weight: 700;
+  }
+
+  /* === Tabs (bottom nav) === */
+  .tabs {
+    position: fixed; bottom: 12px; left: 12px; right: 12px;
+    max-width: 536px; margin: 0 auto;
+    background: rgba(255,255,255,0.95);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    border: 1.5px solid var(--ring); border-radius: 24px;
+    padding: 6px; z-index: 20;
+    display: flex; gap: 2px;
+    box-shadow: 0 12px 32px rgba(106,79,184,.18);
+  }
+  .tabs button {
+    flex: 1; padding: 8px 4px; border: none; background: transparent;
+    border-radius: 18px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 10px; font-weight: 800; color: var(--ink-mute);
+    transition: all .15s;
+  }
+  .tabs button .ico { font-size: 20px; filter: grayscale(.4); opacity: .7; }
+  .tabs button.active {
+    background: linear-gradient(135deg, #f4ecff, #ffe4f1);
+    color: var(--lav-d);
+  }
+  .tabs button.active .ico { filter: none; opacity: 1; }
+
+  /* === Tip cards (collectible) === */
+  .tip-hero {
+    background: linear-gradient(135deg, #6a4fb8 0%, #8b6fd4 100%);
+    color: #fff;
+    border-radius: 26px;
+    padding: 20px; margin-top: 8px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .tip-hero::before {
+    content: ''; position: absolute; inset: -30%;
+    background: radial-gradient(circle, rgba(255,209,102,.3) 0%, transparent 60%);
+    animation: rotate 15s linear infinite;
+  }
+  @keyframes rotate { to { transform: rotate(360deg); } }
+  .tip-hero > * { position: relative; }
+  .tip-hero h2 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+  .tip-hero .tip-sub { font-size: 13px; opacity: .85; font-weight: 700; margin-bottom: 14px; }
+
+  .tip-claim-btn {
+    padding: 14px 22px;
+    border-radius: 999px;
+    font-size: 15px; font-weight: 900;
+    background: linear-gradient(135deg, #ffd166, #ff9a6a);
+    color: #4a2a08;
+    box-shadow: 0 5px 0 #c99a3c, 0 10px 24px rgba(255,154,106,.35);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .tip-claim-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #c99a3c; }
+  .tip-claim-btn:disabled { opacity: .6; cursor: not-allowed; filter: grayscale(.3); }
+
+  .tip-progress { margin-top: 12px; font-size: 12px; font-weight: 800; opacity: .9; }
+
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-top: 14px;
+  }
+  @media (max-width: 380px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .tip-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    padding: 12px 8px 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    text-align: center;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: transform .18s;
+    border: 2px solid transparent;
+  }
+  .tip-card:hover { transform: translateY(-3px); }
+  .tip-card.locked {
+    background: repeating-linear-gradient(135deg, #e9e2f7, #e9e2f7 8px, #dfd5f0 8px, #dfd5f0 16px);
+    color: var(--ink-mute);
+    border-color: rgba(106,79,184,.15);
+    cursor: default;
+  }
+  .tip-card.locked .tip-icon { opacity: .3; }
+  .tip-card.common    { background: linear-gradient(150deg, #e7f3ff, #c9dff5); border-color: #8ec6f5; color: #1b3c5a; }
+  .tip-card.rare      { background: linear-gradient(150deg, #e6ffe9, #a8e2b6); border-color: #5cbd9e; color: #0d3b2c; }
+  .tip-card.epic      { background: linear-gradient(150deg, #f6e9ff, #d3b3f2); border-color: var(--lav); color: var(--lav-d); }
+  .tip-card.legendary {
+    background: linear-gradient(150deg, #fff6d9, #ffd166, #ff9a6a);
+    border-color: #c99a3c; color: #4a2a08;
+    box-shadow: 0 8px 24px rgba(255,154,106,.3);
+    animation: legend 3s ease-in-out infinite;
+  }
+  @keyframes legend {
+    0%,100% { box-shadow: 0 8px 24px rgba(255,154,106,.3); }
+    50%     { box-shadow: 0 8px 30px rgba(255,209,102,.6); }
+  }
+  .tip-icon { font-size: 34px; margin-top: 4px; }
+  .tip-title { font-size: 11px; font-weight: 900; line-height: 1.15; padding: 0 2px; }
+  .tip-rarity {
+    font-size: 8.5px; font-weight: 900; letter-spacing: .5px;
+    padding: 2px 6px; border-radius: 999px;
+    background: rgba(255,255,255,.5);
+    text-transform: uppercase;
+  }
+
+  /* === Tip reveal overlay === */
+  .reveal-bg {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle, rgba(106,79,184,.7) 0%, rgba(29,21,64,.92) 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; z-index: 500;
+    animation: pop .3s ease-out;
+  }
+  .reveal-card {
+    width: 100%; max-width: 320px;
+    background: #fff;
+    border-radius: 28px;
+    padding: 28px 22px 22px;
+    text-align: center;
+    position: relative;
+    animation: revealIn .7s cubic-bezier(.2,1.4,.4,1) forwards;
+    transform-style: preserve-3d;
+  }
+  @keyframes revealIn {
+    0%   { transform: scale(.3) rotate(-180deg); opacity: 0; }
+    70%  { transform: scale(1.06) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .reveal-card .icn { font-size: 60px; margin-bottom: 8px; filter: drop-shadow(0 5px 15px rgba(255,209,102,.5)); }
+  .reveal-card .rarity-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 900; letter-spacing: 1.2px;
+    padding: 4px 12px; border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .reveal-card.common    .rarity-tag { background: #c9dff5; color: #1b3c5a; }
+  .reveal-card.rare      .rarity-tag { background: #a8e2b6; color: #0d3b2c; }
+  .reveal-card.epic      .rarity-tag { background: #d3b3f2; color: var(--lav-d); }
+  .reveal-card.legendary .rarity-tag { background: linear-gradient(135deg, #ffd166, #ff9a6a); color: #4a2a08; }
+  .reveal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+  .reveal-card .body { font-size: 14px; color: var(--ink-s); line-height: 1.5; font-weight: 600; margin-bottom: 14px; }
+  .reveal-card .close-btn {
+    padding: 10px 24px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--lav), var(--lav-d));
+    color: #fff; font-weight: 900; font-size: 14px;
+  }
+  .reveal-sparks {
+    position: absolute; inset: -20px;
+    pointer-events: none;
+  }
+  .reveal-sparks span {
+    position: absolute;
+    font-size: 18px;
+    animation: sparkFly 1.4s ease-out forwards;
+  }
+  @keyframes sparkFly {
+    0%   { transform: translate(0,0) scale(0); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1.4); opacity: 0; }
+  }
+
+  /* === Videos === */
+  .video-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 12px;
+    border: 1.5px solid var(--ring);
+    margin-bottom: 10px;
+  }
+  .video-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+  .video-iframe-wrap {
+    position: relative;
+    width: 100%; padding-bottom: 56.25%;
+    border-radius: 14px; overflow: hidden;
+    background: #000;
+  }
+  .video-iframe-wrap iframe {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+  }
+  .video-placeholder {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--night1), var(--night2));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,.6);
+    font-size: 13px; font-weight: 700;
+    text-align: center; padding: 16px;
+  }
+
+  /* === Stats === */
+  .stat-hero {
+    background: linear-gradient(135deg, #3d2a6b, #6a4fb8);
+    color: #fff;
+    border-radius: 26px;
+    padding: 20px;
+    margin-top: 8px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .stat-hero .player-lvl {
+    font-size: 11px; font-weight: 900; letter-spacing: 1px; opacity: .8;
+  }
+  .stat-hero .player-lvl-num {
+    font-size: 54px; font-weight: 900;
+    background: linear-gradient(135deg, #ffd166, #ff9a6a);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1;
+    margin: 4px 0 0;
+  }
+  .stat-hero .player-xp-bar {
+    margin-top: 10px; height: 10px; background: rgba(0,0,0,.2);
+    border-radius: 999px; overflow: hidden;
+  }
+  .stat-hero .player-xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd166, #ff9a6a);
+    border-radius: 999px; transition: width .5s;
+  }
+  .stat-hero .player-xp-text {
+    font-size: 11px; margin-top: 6px; opacity: .85; font-weight: 700;
+  }
+
+  .records-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .record-card {
+    background: #fff; border: 1.5px solid var(--ring);
+    border-radius: 18px; padding: 12px 14px;
+  }
+  .record-card .r-label { font-size: 11px; color: var(--ink-mute); font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+  .record-card .r-value {
+    font-size: 20px; font-weight: 900; color: var(--ink);
+    margin-top: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .record-card .r-value .emo { font-size: 22px; }
+
+  .heatmap-card {
+    background: #fff; border: 1.5px solid var(--ring);
+    border-radius: 20px; padding: 14px; margin-top: 14px;
+  }
+  .heatmap-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 4px;
+  }
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    background: #f0ebf9;
+    position: relative;
+  }
+  .heatmap-cell.q1 { background: #ffe4c2; }
+  .heatmap-cell.q2 { background: #ffd166; }
+  .heatmap-cell.q3 { background: #5cbd9e; }
+  .heatmap-cell.today { outline: 2px solid var(--lav-d); outline-offset: 1px; }
+  .heatmap-legend {
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: 4px; font-size: 10.5px; color: var(--ink-mute); font-weight: 700;
+    margin-top: 8px;
+  }
+  .heatmap-legend .sw { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* === Achievements === */
+  .ach-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-top: 6px;
+  }
+  @media (max-width: 400px) { .ach-grid { grid-template-columns: repeat(3, 1fr); } }
+  .ach-card {
+    aspect-ratio: 1;
+    background: #fff; border: 2px solid var(--ring);
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 6px 4px;
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .ach-card:hover { transform: scale(1.04); }
+  .ach-card.got {
+    background: linear-gradient(135deg, #fff8df, #ffd166);
+    border-color: #c99a3c;
+    box-shadow: 0 4px 14px rgba(201,154,60,.28);
+  }
+  .ach-card.locked { opacity: .5; filter: grayscale(.7); }
+  .ach-card .ach-icon { font-size: 26px; margin-bottom: 2px; }
+  .ach-card .ach-label { font-size: 9.5px; font-weight: 900; color: var(--ink); line-height: 1.1; }
+  .ach-card.locked .ach-label { color: var(--ink-mute); }
+
+  /* === Quiz === */
+  .quiz-hero {
+    background: linear-gradient(135deg, #ff9a6a 0%, #ffd166 100%);
+    color: #4a2a08;
+    border-radius: 26px;
+    padding: 20px; text-align: center;
+    margin-top: 8px;
+    position: relative; overflow: hidden;
+  }
+  .quiz-hero h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+  .quiz-hero .sub { font-size: 13px; opacity: .85; font-weight: 700; margin-bottom: 12px; }
+  .quiz-hero .best {
+    background: rgba(255,255,255,.6);
+    display: inline-block;
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .quiz-start-btn {
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 16px; font-weight: 900;
+    background: #4a2a08; color: #fff;
+    box-shadow: 0 5px 0 #2d1904;
+  }
+  .quiz-start-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #2d1904; }
+  .quiz-card {
+    margin-top: 8px;
+    background: #fff;
+    border-radius: 22px;
+    padding: 18px;
+    border: 1.5px solid var(--ring);
+  }
+  .quiz-progress {
+    font-size: 12px; font-weight: 800; color: var(--ink-mute);
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .quiz-progress .timer {
+    background: linear-gradient(135deg, var(--peach-d), var(--sun));
+    color: #4a2a08;
+    padding: 3px 10px; border-radius: 999px;
+    font-weight: 900;
+  }
+  .quiz-progress .timer.low { background: linear-gradient(135deg, #ff7a9a, #e11d48); color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+  .quiz-q {
+    font-size: 16px; font-weight: 800; line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    padding: 12px 14px;
+    background: #f8f4ff;
+    border: 2px solid var(--ring);
+    border-radius: 14px;
+    font-size: 14px; font-weight: 700;
+    color: var(--ink);
+    text-align: left;
+    transition: all .15s;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .quiz-opt:hover { background: #efe8ff; }
+  .quiz-opt.ok   { background: linear-gradient(135deg, #c4f2d9, #8fd6bd); border-color: var(--mint-d); }
+  .quiz-opt.wrong { background: linear-gradient(135deg, #ffd4dd, #ff9aae); border-color: #e11d48; color: #8a1f3a; }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-result {
+    text-align: center;
+    padding: 20px;
+    margin-top: 8px;
+    background: #fff;
+    border-radius: 22px;
+    border: 1.5px solid var(--ring);
+  }
+  .quiz-result .score-emoji { font-size: 64px; margin-bottom: 8px; }
+  .quiz-result .score-num {
+    font-size: 48px; font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, var(--lav-d), var(--peach-d));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .quiz-result .score-title { font-size: 18px; font-weight: 900; margin: 8px 0 4px; }
+  .quiz-result .score-sub  { font-size: 13px; color: var(--ink-s); font-weight: 700; margin-bottom: 14px; }
+  .quiz-result .retry-btn  { padding: 12px 22px; border-radius: 999px; background: linear-gradient(135deg, var(--lav), var(--lav-d)); color: #fff; font-weight: 900; font-size: 14px; }
+
+  /* === Bonus toast === */
+  .bonus-pop {
+    position: fixed; top: 70px; left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fff8df, #ffd166);
+    color: #4a2a08;
+    padding: 12px 18px; border-radius: 999px;
+    font-weight: 900; font-size: 14px;
+    box-shadow: 0 10px 30px rgba(255,209,102,.4);
+    z-index: 200;
+    animation: bonusIn .4s cubic-bezier(.2,1.4,.4,1), bonusOut .4s ease-in 2.5s forwards;
+  }
+  @keyframes bonusIn { from {opacity:0;transform:translate(-50%,-20px)} to {opacity:1;transform:translate(-50%,0)} }
+  @keyframes bonusOut { to {opacity:0;transform:translate(-50%,-20px)} }
+
+  /* === Confetti === */
+  .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200; overflow: hidden; }
+  .confetti span {
+    position: absolute; top: -20px; width: 10px; height: 14px;
+    animation: cfall 1.6s ease-in forwards;
+  }
+  @keyframes cfall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+  /* === Level-up toast === */
+  .toast {
+    position: fixed; left: 50%; top: 30%; transform: translateX(-50%);
+    background: linear-gradient(135deg, #fff8df, #ffd166);
+    color: #4a2a08; border: 3px solid #c99a3c;
+    border-radius: 22px; padding: 18px 22px; text-align: center;
+    box-shadow: 0 20px 50px rgba(201,154,60,.35);
+    z-index: 300; max-width: 320px;
+    animation: bounceIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes bounceIn { 0% { transform: translateX(-50%) scale(0) rotate(-10deg); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+  .toast .big { font-size: 42px; display:block; margin-bottom: 4px; }
+  .toast .t1 { font-size: 13px; font-weight: 800; color: var(--sun-d); letter-spacing: 1px; }
+  .toast .t2 { font-size: 18px; font-weight: 900; margin: 2px 0; }
+  .toast .t3 { font-size: 12px; font-weight: 700; }
+  .toast button {
+    margin-top: 10px; padding: 8px 16px; border-radius: 999px;
+    background: #4a2a08; color: #fff; font-weight: 800; font-size: 13px;
+  }
+
+  /* === Modals === */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(42,31,74,0.45);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; z-index: 100;
+    animation: pop .2s ease-out;
+  }
+  .modal {
+    background: #fff; border-radius: 28px;
+    padding: 22px 20px;
+    max-width: 440px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 10px; right: 12px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #f3ecff; color: var(--ink-s);
+    font-size: 16px; font-weight: 800;
+  }
+  .modal h2 { text-align: center; font-size: 22px; margin-bottom: 6px; }
+  .modal p { font-size: 14px; color: var(--ink-s); text-align: center; line-height: 1.45; margin: 0 0 12px; }
+  .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid var(--ring); }
+  .settings-row:first-of-type { border-top: none; }
+  .settings-row label { font-size: 14px; font-weight: 800; }
+  .settings-row input {
+    flex: 1; max-width: 160px; padding: 8px 12px; border-radius: 12px;
+    border: 1.5px solid var(--ring); font-family: inherit; font-size: 14px; font-weight: 700;
+    color: var(--ink);
+  }
+
+  @media (max-width: 360px) {
+    .picker-btn { min-width: 60px; padding: 10px 6px; }
+    .picker-btn .big { font-size: 24px; }
+    .main-btn { font-size: 16px; padding: 16px; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .tabs button { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ==================================================== */
+/* SonoTracker v2 — full app                            */
+/* ==================================================== */
+(function(){
+
+/* ===================== STORAGE ===================== */
+const KEY = 'sono-v2';
+const defaultState = {
+  name: '',
+  logs: [],                 // {id,date,sleepAt,wakeAt,quality,dream,duration}
+  pending: null,            // {sleepAt}
+  unlockedLevels: [],
+  unlockedAchievements: [], // ['ach_id', ...]
+  unlockedTips: [],         // ['tip_id', ...]
+  viewedVideos: [],         // ['vid_id', ...]
+  quizHighScore: 0,
+  quizAttempts: 0,
+  lastDailyBonus: null,     // 'YYYY-MM-DD'
+  lastTipClaim: null,       // 'YYYY-MM-DD'
+  claimedChallenge: null,   // 'YYYY-Wxx' — неделя, за которую уже получена награда
+  stars: 0,
+};
+function load(){
+  try { return Object.assign({}, defaultState, JSON.parse(localStorage.getItem(KEY) || '{}')); }
+  catch(e){ return {...defaultState}; }
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+let state = load();
+
+/* ===================== HELPERS ===================== */
+const todayISO = () => new Date().toISOString().slice(0,10);
+const fmtDate = (iso) => {
+  const d = new Date(iso);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yest = new Date(today); yest.setDate(today.getDate()-1);
+  const day = new Date(iso); day.setHours(0,0,0,0);
+  if (+day === +today) return 'Сегодня';
+  if (+day === +yest)  return 'Вчера';
+  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  return d.getDate() + ' ' + months[d.getMonth()];
+};
+const fmtTime = (iso) => {
+  const d = new Date(iso);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+};
+const fmtDur = (min) => {
+  const h = Math.floor(min/60), m = min%60;
+  return h + 'ч ' + (m<10?'0':'') + m + 'м';
+};
+const hourOfLocal = (iso) => new Date(iso).getHours();
+
+function computeStreak(logs){
+  if (!logs.length) return 0;
+  const dates = new Set(logs.map(l => l.date));
+  let streak = 0;
+  let d = new Date(); d.setHours(0,0,0,0);
+  while (dates.has(d.toISOString().slice(0,10))) { streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+
+/* ===================== WEEK HELPERS ===================== */
+function mondayOfWeek(d){
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  const dayNr = (dt.getDay() + 6) % 7; // 0 = Monday
+  dt.setDate(dt.getDate() - dayNr);
+  return dt;
+}
+function weekKey(d = new Date()){
+  const mon = mondayOfWeek(d);
+  // ISO-ish: year + week number based on Monday
+  const yearStart = new Date(mon.getFullYear(), 0, 1);
+  const week = Math.ceil(((mon - yearStart) / 86400000 + 1) / 7);
+  return mon.getFullYear() + '-W' + String(week).padStart(2, '0');
+}
+function isThisWeek(iso){
+  const d = new Date(iso); d.setHours(0,0,0,0);
+  const mon = mondayOfWeek(new Date());
+  const next = new Date(mon); next.setDate(mon.getDate() + 7);
+  return d >= mon && d < next;
+}
+
+/* ===================== LEVELS ===================== */
+const LEVELS = [
+  { id: 1,  icon: '🌱', name: 'Первые шаги',       desc: 'Запиши сон 3 ночи',     goal: 3,  reward: 10,  check: (logs) => logs.length },
+  { id: 2,  icon: '🌙', name: 'Лунный новичок',    desc: 'Запиши 5 ночей',        goal: 5,  reward: 15,  check: (logs) => logs.length },
+  { id: 3,  icon: '⏰', name: 'Точно ко сну',      desc: 'Ложись до 22:00 × 3',   goal: 3,  reward: 20,  check: (logs) => logs.filter(l => { const h = hourOfLocal(l.sleepAt); return h >= 18 && h < 22; }).length },
+  { id: 4,  icon: '🛏️', name: 'Выспался!',         desc: 'Спи 9+ часов 5 раз',    goal: 5,  reward: 25,  check: (logs) => logs.filter(l => l.duration >= 540).length },
+  { id: 5,  icon: '🔥', name: 'Неделя подряд',     desc: '7 дней без пропусков',  goal: 7,  reward: 40,  check: (logs) => computeStreak(logs) },
+  { id: 6,  icon: '🦄', name: 'Коллекционер снов', desc: 'Все 4 типа снов',       goal: 4,  reward: 30,  check: (logs) => new Set(logs.map(l => l.dream).filter(Boolean)).size },
+  { id: 7,  icon: '😊', name: 'Волна радости',     desc: '5 снов с оценкой 😊',   goal: 5,  reward: 30,  check: (logs) => logs.filter(l => l.quality === 3).length },
+  { id: 8,  icon: '🌞', name: 'Жаворонок-мастер',  desc: 'Проснись до 07:00 × 5', goal: 5,  reward: 35,  check: (logs) => logs.filter(l => hourOfLocal(l.wakeAt) < 7).length },
+  { id: 9,  icon: '🎴', name: 'Коллекционер карт', desc: 'Собери 10 советов',     goal: 10, reward: 50,  check: () => state.unlockedTips.length },
+  { id: 10, icon: '🧠', name: 'Умник',             desc: 'Викторина 9+ из 10',    goal: 9,  reward: 40,  check: () => state.quizHighScore },
+  { id: 11, icon: '👑', name: 'Мастер снов',       desc: '21 ночь записана',      goal: 21, reward: 100, check: (logs) => logs.length },
+  { id: 12, icon: '🌌', name: 'Легенда сна',       desc: '50 ночей записано',     goal: 50, reward: 200, check: (logs) => logs.length },
+];
+
+/* ===================== ACHIEVEMENTS ===================== */
+const ACHIEVEMENTS = [
+  { id: 'first_log',     icon: '✨',   name: 'Первый сон',       desc: 'Запиши первую ночь',              check: (s) => s.logs.length >= 1 },
+  { id: 'week_logger',   icon: '📅',   name: 'Неделя знаний',     desc: '7 ночей записано',                check: (s) => s.logs.length >= 7 },
+  { id: 'early_bird',    icon: '🐦',   name: 'Жаворонок',         desc: 'Проснись до 07:00 × 3',           check: (s) => s.logs.filter(l => hourOfLocal(l.wakeAt) < 7).length >= 3 },
+  { id: 'ultra_early',   icon: '🌅',   name: 'Рассветный',        desc: 'Проснись до 06:00 × 2',           check: (s) => s.logs.filter(l => hourOfLocal(l.wakeAt) < 6).length >= 2 },
+  { id: 'night_owl',     icon: '🦉',   name: 'Ночная сова',       desc: 'Ложись после 23:00',              check: (s) => s.logs.some(l => hourOfLocal(l.sleepAt) >= 23 || hourOfLocal(l.sleepAt) <= 4) },
+  { id: 'long_sleep',    icon: '💤',   name: 'Соня-чемпион',      desc: 'Спи 10+ часов',                   check: (s) => s.logs.some(l => l.duration >= 600) },
+  { id: 'marathon',      icon: '😴',   name: 'Марафон сна',       desc: 'Спи 11+ часов',                   check: (s) => s.logs.some(l => l.duration >= 660) },
+  { id: 'collector',     icon: '🎴',   name: 'Коллекционер',      desc: 'Собери 5 карточек',               check: (s) => s.unlockedTips.length >= 5 },
+  { id: 'tip_hunter',    icon: '🎯',   name: 'Охотник за советами', desc: 'Собери 10 карточек',            check: (s) => s.unlockedTips.length >= 10 },
+  { id: 'legendary_card',icon: '🌟',   name: 'Легендарная карта', desc: 'Получи легендарную карточку',     check: (s) => s.unlockedTips.some(id => { const t = TIPS.find(x => x.id === id); return t && t.rarity === 'legendary'; }) },
+  { id: 'all_cards',     icon: '🏵️',  name: 'Полная коллекция',  desc: 'Все карточки собраны',            check: (s) => s.unlockedTips.length >= TIPS.length },
+  { id: 'scholar',       icon: '📚',   name: 'Знаток сна',        desc: 'Викторина 8+ из 10',              check: (s) => s.quizHighScore >= 8 },
+  { id: 'genius',        icon: '🧠',   name: 'Гений',             desc: 'Викторина 10 из 10',              check: (s) => s.quizHighScore >= 10 },
+  { id: 'quiz_master',   icon: '🎓',   name: 'Магистр викторин',  desc: '5 раз прошёл викторину',          check: (s) => s.quizAttempts >= 5 },
+  { id: 'streak_3',      icon: '🔥',   name: 'Три подряд',        desc: '3 ночи без пропусков',            check: (s) => computeStreak(s.logs) >= 3 },
+  { id: 'streak_7',      icon: '🔥',   name: 'Неделя-огонь',      desc: '7 ночей подряд',                  check: (s) => computeStreak(s.logs) >= 7 },
+  { id: 'streak_14',     icon: '🔥',   name: 'Две недели!',       desc: '14 дней подряд',                  check: (s) => computeStreak(s.logs) >= 14 },
+  { id: 'hundred_stars', icon: '⭐',   name: '100 звёзд',         desc: 'Накопи 100 звёзд',                check: (s) => s.stars >= 100 },
+  { id: 'five_hundred',  icon: '💫',   name: 'Полтыщи!',          desc: 'Накопи 500 звёзд',                check: (s) => s.stars >= 500 },
+  { id: 'all_dreams',    icon: '🌈',   name: 'Все сны',           desc: 'Все 4 типа снов',                 check: (s) => new Set(s.logs.map(l => l.dream).filter(Boolean)).size >= 4 },
+  { id: 'month_club',    icon: '🏆',   name: 'Месячный клуб',     desc: '30 записей',                      check: (s) => s.logs.length >= 30 },
+  { id: 'perfect_week',  icon: '💎',   name: 'Идеальная неделя',  desc: '7 ночей подряд по 9+ часов',      check: (s) => {
+      const long = new Set(s.logs.filter(l => l.duration >= 540).map(l => l.date));
+      if (long.size < 7) return false;
+      const dates = [...long].sort();
+      let cur = 1, best = 1;
+      for (let i = 1; i < dates.length; i++) {
+        const diff = Math.round((new Date(dates[i]) - new Date(dates[i-1])) / 86400000);
+        if (diff === 1) { cur++; best = Math.max(best, cur); } else cur = 1;
+      }
+      return best >= 7;
+    } },
+  { id: 'weekend_hero',  icon: '🎉',   name: 'Герой выходных',    desc: 'Супер-ночи в Сб и Вс',            check: (s) => {
+      const sat = s.logs.some(l => { const d = new Date(l.date); return d.getDay() === 6 && l.quality === 3; });
+      const sun = s.logs.some(l => { const d = new Date(l.date); return d.getDay() === 0 && l.quality === 3; });
+      return sat && sun;
+    } },
+  { id: 'super_player',  icon: '🦸',   name: 'Супер-игрок',       desc: 'Достигни 5 уровня игрока',        check: (s) => Math.floor(s.stars/50) + 1 >= 5 },
+];
+
+/* ===================== TIPS (collectible cards) ===================== */
+const TIPS = [
+  // ===== COMMON (15) =====
+  { id: 't1',  icon: '💡', title: 'Свет мешает',          body: 'Перед сном выключи яркие лампы. В темноте мозг делает мелатонин — гормон сна.',                   rarity: 'common' },
+  { id: 't2',  icon: '📵', title: 'Телефон в сторону',    body: 'Экраны светят синим светом и «крадут» сон. За час до кровати — отложи.',                          rarity: 'common' },
+  { id: 't3',  icon: '🌡️', title: 'Прохладно = уютно',    body: 'В комнате 18–20 °C — лучшая температура для глубокого сна.',                                     rarity: 'common' },
+  { id: 't4',  icon: '🍫', title: 'Без сладкого вечером', body: 'Шоколад и кола содержат кофеин. Он не даёт уснуть и после заката.',                               rarity: 'common' },
+  { id: 't5',  icon: '🚿', title: 'Тёплый душ',           body: 'Тёплая вода расслабляет мышцы — и уснуть становится проще.',                                      rarity: 'common' },
+  { id: 't6',  icon: '🪟', title: 'Проветри комнату',     body: 'Свежий воздух перед сном = глубокий сон. Открой окно на 10 минут.',                                rarity: 'common' },
+  { id: 't7',  icon: '🍽️', title: 'Лёгкий ужин',          body: 'Тяжёлая еда мешает уснуть. Банан, йогурт, каша — самое то.',                                     rarity: 'common' },
+  { id: 't8',  icon: '🧦', title: 'Тёплые носки',         body: 'Тёплые ноги помогают быстро заснуть — проверенный трюк!',                                          rarity: 'common' },
+  { id: 't9',  icon: '🕘', title: 'Одно время',           body: 'Ложись каждый день в один и тот же час — даже в выходные.',                                        rarity: 'common' },
+  { id: 't10', icon: '🎵', title: 'Тихая музыка',         body: 'Спокойная мелодия убаюкивает лучше любых мультиков.',                                              rarity: 'common' },
+  { id: 't11', icon: '☀️', title: 'Утренний свет',         body: 'Сразу после пробуждения открой шторы — это будит мозг мягко.',                                   rarity: 'common' },
+  { id: 't12', icon: '🧘', title: '3 хороших вещи',       body: 'Вспомни 3 приятных момента за день — и засыпаешь с улыбкой.',                                      rarity: 'common' },
+  { id: 't13', icon: '🧸', title: 'Мягкая подушка',       body: 'С любимой игрушкой спится уютнее. Не бойся обнимать её.',                                           rarity: 'common' },
+  { id: 't14', icon: '💧', title: 'Вода днём',            body: 'Пей воду в течение дня, но не литрами перед сном — иначе встанешь ночью.',                          rarity: 'common' },
+  { id: 't15', icon: '🌿', title: 'Ромашковый чай',       body: 'Тёплая ромашка вечером расслабляет. Лучше, чем крепкий чёрный.',                                    rarity: 'common' },
+
+  // ===== RARE (10) =====
+  { id: 't16', icon: '📖', title: 'Книжка вместо экрана',  body: 'Чтение 10 минут перед сном «успокаивает» мозг лучше любых видео.',                                rarity: 'rare' },
+  { id: 't17', icon: '🌬️', title: 'Дыхание 4-7-8',         body: 'Вдохни 4 сек, задержи 7, выдохни 8. Повтори 4 раза — и ты уже уплываешь!',                       rarity: 'rare' },
+  { id: 't18', icon: '🏃', title: 'Двигайся днём',          body: '30 минут активности днём дают спокойный сон. Но не бегай прямо перед сном!',                       rarity: 'rare' },
+  { id: 't19', icon: '🌞', title: 'Утреннее солнце',        body: '10 минут на свету утром «запускают часики» мозга — вечером он сам захочет спать.',                 rarity: 'rare' },
+  { id: 't20', icon: '🧴', title: 'Ритуалы важны',          body: 'Чистка зубов → сказка → лампа выключена. Мозг понимает: «время спать».',                          rarity: 'rare' },
+  { id: 't21', icon: '🛌', title: 'Кровать только для сна', body: 'Не делай в кровати уроки и не играй. Пусть мозг связывает её только со сном.',                     rarity: 'rare' },
+  { id: 't22', icon: '🕕', title: 'Кофеин до обеда',        body: 'После 14:00 — никакого чая и колы. Кофеин действует 6 часов!',                                     rarity: 'rare' },
+  { id: 't23', icon: '☁️', title: 'Белый шум',              body: 'Вентилятор или шум дождя помогают заснуть в шумном мире.',                                         rarity: 'rare' },
+  { id: 't24', icon: '🎨', title: 'Цвет спальни',           body: 'Голубой и зелёный успокаивают. Красный — бодрит, для спальни не подходит.',                          rarity: 'rare' },
+  { id: 't25', icon: '⏱️', title: 'Правило 20 минут',       body: 'Не засыпаешь за 20 минут? Встань, почитай в мягком свете и возвращайся.',                          rarity: 'rare' },
+
+  // ===== EPIC (7) =====
+  { id: 't26', icon: '🧠', title: 'Мозг-уборщик',           body: 'Во сне мозг «промывает» нейроны и сортирует память. Без сна учёба не работает!',                  rarity: 'epic' },
+  { id: 't27', icon: '🌙', title: 'Фазы сна',               body: 'За ночь — 4–6 циклов из медленного и быстрого сна. В быстром — ты видишь сны.',                   rarity: 'epic' },
+  { id: 't28', icon: '📈', title: 'Рост во сне',            body: 'Гормон роста выделяется ночью — в глубоком сне. Спишь меньше — растёшь медленнее.',              rarity: 'epic' },
+  { id: 't29', icon: '🛡️', title: 'Иммунитет',               body: 'Во сне организм делает «солдатиков» против вирусов. Спящий ребёнок реже болеет.',                rarity: 'epic' },
+  { id: 't30', icon: '💭', title: 'Память',                  body: 'Сон важнее для запоминания, чем зубрёжка перед экзаменом. Учёные проверяли!',                    rarity: 'epic' },
+  { id: 't31', icon: '🌃', title: 'Подростку — 9 часов',     body: 'Школьнику нужно 9–11 часов сна — это больше, чем взрослому.',                                     rarity: 'epic' },
+  { id: 't32', icon: '🕰️', title: 'Биочасы',                 body: 'В мозге есть «часики» — они знают, когда спать, даже без будильника.',                           rarity: 'epic' },
+
+  // ===== LEGENDARY (5) =====
+  { id: 't33', icon: '🌌', title: 'Секрет чемпионов',        body: 'Олимпийские чемпионы спят 9–10 часов! Сон — часть тренировки.',                                  rarity: 'legendary' },
+  { id: 't34', icon: '👑', title: 'Твоё супер-правило',      body: 'Ложись и вставай в одно время — даже в выходные. Тело скажет «спасибо».',                          rarity: 'legendary' },
+  { id: 't35', icon: '🐬', title: 'Дельфины-сони',            body: 'Дельфины спят одним полушарием мозга — чтобы не утонуть! Вот это супер-сила.',                    rarity: 'legendary' },
+  { id: 't36', icon: '🦒', title: 'Жирафы-атлеты',            body: 'Жирафы спят всего 30 минут в сутки! Но у людей так не получится.',                                rarity: 'legendary' },
+  { id: 't37', icon: '🏅', title: 'Рекорд без сна',           body: '11 дней без сна — мировой рекорд. Человеку было очень плохо. Лучше не повторять!',                 rarity: 'legendary' },
+];
+
+/* ===================== QUIZ ===================== */
+// Pool of 22 questions; каждый раунд случайно выбирается 10.
+const QUIZ = [
+  { q: 'Сколько часов в среднем нужно спать школьнику?',                   opts: ['5–6 часов','7–8 часов','9–11 часов','12–14 часов'],                          correct: 2 },
+  { q: 'Какой гормон отвечает за сон?',                                    opts: ['Адреналин','Мелатонин','Инсулин','Серотонин'],                              correct: 1 },
+  { q: 'Что мешает уснуть вечером?',                                       opts: ['Яркий экран телефона','Тёплое молоко','Книга','Тишина'],                    correct: 0 },
+  { q: 'Какая температура в комнате лучше для сна?',                       opts: ['10–14 °C','18–20 °C','24–26 °C','30 °C+'],                                   correct: 1 },
+  { q: 'Что происходит с мозгом во сне?',                                  opts: ['Он отключается','«Промывает» нейроны','Растёт в размере','Забывает всё'], correct: 1 },
+  { q: 'Сколько циклов сна за ночь?',                                      opts: ['1','2–3','4–6','10+'],                                                       correct: 2 },
+  { q: 'Когда снятся сны?',                                                opts: ['В медленном сне','В быстром сне (REM)','Не снятся','Только утром'],        correct: 1 },
+  { q: 'Что поможет заснуть?',                                             opts: ['Кофе','Тёплый душ','Мультики','Пробежка за 5 минут'],                        correct: 1 },
+  { q: 'Что выделяется во сне и помогает расти?',                          opts: ['Сахар','Гормон роста','Витамин C','Кислород'],                               correct: 1 },
+  { q: 'Лучшая привычка для сна:',                                         opts: ['Ложиться когда хочется','Одно и то же время каждый день','Смотреть сериалы','Есть перед сном'], correct: 1 },
+  { q: 'Сколько часов действует кофеин в организме?',                      opts: ['1 час','3 часа','6 часов','12 часов'],                                       correct: 2 },
+  { q: 'Какое животное спит одним полушарием мозга?',                      opts: ['Кот','Дельфин','Собака','Рыба'],                                             correct: 1 },
+  { q: 'Сколько минут в сутки спит жираф?',                                opts: ['10','30','2 часа','5 часов'],                                                correct: 1 },
+  { q: 'Лучший перекус перед сном:',                                       opts: ['Пицца','Банан','Шоколад','Кола'],                                            correct: 1 },
+  { q: 'Почему нельзя смотреть телефон перед сном?',                       opts: ['Скучно','Синий свет мешает сну','Экран маленький','Батарея садится'],       correct: 1 },
+  { q: 'Что такое REM-фаза?',                                              opts: ['Медленный сон','Быстрый сон, когда видим сны','Полусон','Бодрствование'],   correct: 1 },
+  { q: 'Где лучше всего спать?',                                           opts: ['На полу','В своей кровати','На диване','В кресле'],                          correct: 1 },
+  { q: 'Как быстрее заснуть?',                                             opts: ['Поиграть в телефон','Представить приятное место','Съесть конфет','Выпить колу'], correct: 1 },
+  { q: 'Зачем так важно спать?',                                           opts: ['Для роста','Для памяти','Для иммунитета','Для всего этого'],                correct: 3 },
+  { q: 'Что делать, если не можешь уснуть 20 минут?',                      opts: ['Лежать дальше','Встать и почитать','Играть в телефон','Съесть что-то'],    correct: 1 },
+  { q: 'Сколько снов в среднем видит человек за ночь?',                    opts: ['1','2','3','4–6'],                                                            correct: 3 },
+  { q: 'Мелатонин вырабатывается в организме:',                            opts: ['В темноте','В свете','Только днём','От еды'],                                 correct: 0 },
+];
+
+/* ===================== WEEKLY CHALLENGES ===================== */
+// Каждую неделю по кругу — новая цель. Награда начисляется один раз за неделю.
+const CHALLENGES = [
+  { id: 'w_full',   icon: '📝', title: 'Полная неделя',       desc: 'Запиши 5 ночей на этой неделе',                        goal: 5, reward: 45,
+    check: (logs) => logs.filter(l => isThisWeek(l.date)).length },
+  { id: 'w_long',   icon: '🛏️', title: 'Марафон сна',          desc: 'Спи 9+ часов × 4 дня',                                goal: 4, reward: 50,
+    check: (logs) => logs.filter(l => isThisWeek(l.date) && l.duration >= 540).length },
+  { id: 'w_early',  icon: '⏰', title: 'Ранние ночи',          desc: 'Ложись до 22:00 × 3 раза',                             goal: 3, reward: 40,
+    check: (logs) => logs.filter(l => isThisWeek(l.date) && hourOfLocal(l.sleepAt) >= 18 && hourOfLocal(l.sleepAt) < 22).length },
+  { id: 'w_happy',  icon: '😊', title: 'Неделя радости',       desc: '3 супер-ночи с оценкой 😊',                            goal: 3, reward: 40,
+    check: (logs) => logs.filter(l => isThisWeek(l.date) && l.quality === 3).length },
+  { id: 'w_wake',   icon: '🌅', title: 'Ранние подъёмы',       desc: 'Проснись до 07:30 × 3 раза',                            goal: 3, reward: 40,
+    check: (logs) => logs.filter(l => { if (!isThisWeek(l.date)) return false; const d = new Date(l.wakeAt); return d.getHours() < 7 || (d.getHours() === 7 && d.getMinutes() < 30); }).length },
+  { id: 'w_all_dreams', icon: '🌈', title: 'Разные сны',       desc: 'Запиши все 4 типа снов за неделю',                      goal: 4, reward: 45,
+    check: (logs) => new Set(logs.filter(l => isThisWeek(l.date)).map(l => l.dream).filter(Boolean)).size },
+];
+function currentChallenge(){
+  const mon = mondayOfWeek(new Date());
+  // детерминированный выбор: дни от эпохи div 7
+  const weeks = Math.floor(mon.getTime() / (7 * 86400000));
+  return CHALLENGES[weeks % CHALLENGES.length];
+}
+function challengeProgress(){
+  const ch = currentChallenge();
+  const cur = Math.min(ch.check(state.logs), ch.goal);
+  const done = cur >= ch.goal;
+  const wk = weekKey();
+  const claimed = state.claimedChallenge === wk;
+  return { ch, cur, goal: ch.goal, done, claimed, wk };
+}
+function checkWeeklyChallenge(){
+  const p = challengeProgress();
+  if (p.done && !p.claimed) {
+    state.claimedChallenge = p.wk;
+    state.stars += p.ch.reward;
+    return p.ch;
+  }
+  return null;
+}
+
+/* ===================== DREAMS / QUALITIES ===================== */
+const DREAMS = [
+  { id: 'magic',     emoji: '🦄', label: 'Волшебный' },
+  { id: 'adventure', emoji: '🏃', label: 'Приключение' },
+  { id: 'scary',     emoji: '🦖', label: 'Страшный' },
+  { id: 'forgot',    emoji: '😶', label: 'Не помню' },
+];
+const QUALITIES = [
+  { id: 1, emoji: '😴', label: 'Плохо' },
+  { id: 2, emoji: '🙂', label: 'Нормально' },
+  { id: 3, emoji: '😊', label: 'Супер!' },
+];
+const dreamEmoji = (id) => (DREAMS.find(d => d.id === id) || { emoji: '💤' }).emoji;
+const qualEmoji  = (q)  => (QUALITIES.find(d => d.id === q) || { emoji: '💤' }).emoji;
+
+/* ===================== VIDEOS (placeholders for VK) ===================== */
+const VIDEOS = [
+  // Structure: { id, title, url (VK embed), thumb (emoji) }
+  // URLs will be added by user; placeholder shows "coming soon"
+];
+
+/* ===================== CLOUD SVG ===================== */
+function cloudMood(){
+  const streak = computeStreak(state.logs);
+  const last = state.logs[0];
+  const hasToday = last && last.date === todayISO();
+  const now = new Date();
+  if (streak >= 7) return { key:'king',    msg:'Я король снов! 👑' };
+  if (streak >= 3) return { key:'pyjama',  msg:'Нам вместе уютно 🩷' };
+  if (last && last.quality === 1) return { key:'sleepy', msg:'Ты мало поспал...' };
+  if (!hasToday && now.getHours() >= 21) return { key:'waiting', msg:'Пора записать!' };
+  return { key:'happy', msg:null };
+}
+function cloudSVG(mood){
+  const eyes = `
+    <circle cx="74"  cy="74" r="6" fill="#1d1540"/>
+    <circle cx="106" cy="74" r="6" fill="#1d1540"/>
+    <circle cx="76"  cy="72" r="2" fill="#fff"/>
+    <circle cx="108" cy="72" r="2" fill="#fff"/>`;
+  const smile = `<path d="M 82 90 Q 90 98 98 90" stroke="#1d1540" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const blush = `
+    <ellipse cx="64"  cy="86" rx="6" ry="4" fill="#ffb0c8" opacity=".6"/>
+    <ellipse cx="116" cy="86" rx="6" ry="4" fill="#ffb0c8" opacity=".6"/>`;
+  let over = '';
+  if (mood === 'king') {
+    over = `
+      <polygon points="70,36 80,48 90,36 100,48 110,36 110,48 70,48" fill="#ffd166" stroke="#c99a3c" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="80"  cy="38" r="2" fill="#e11d48"/>
+      <circle cx="100" cy="38" r="2" fill="#8fd6bd"/>
+      <circle cx="90"  cy="32" r="2" fill="#ffb0c8"/>`;
+  } else if (mood === 'pyjama') {
+    over = `
+      <g clip-path="url(#cloudclip)">
+        <path d="M 40 100 L 140 100" stroke="#c2b1ed" stroke-width="4" opacity=".65"/>
+        <path d="M 40 112 L 140 112" stroke="#ffb0c8" stroke-width="4" opacity=".65"/>
+        <path d="M 40 124 L 140 124" stroke="#c2b1ed" stroke-width="4" opacity=".65"/>
+      </g>`;
+  } else if (mood === 'sleepy') {
+    over = `
+      <text x="125" y="52" font-size="14" font-weight="bold" fill="#8b6fd4" font-family="Comfortaa">Z</text>
+      <text x="138" y="40" font-size="10" font-weight="bold" fill="#8b6fd4" opacity=".7" font-family="Comfortaa">z</text>
+      <path d="M 68 74 L 80 74" stroke="#1d1540" stroke-width="3" stroke-linecap="round"/>
+      <path d="M 100 74 L 112 74" stroke="#1d1540" stroke-width="3" stroke-linecap="round"/>`;
+  } else if (mood === 'waiting') {
+    over = `<path d="M 82 92 Q 90 88 98 92" stroke="#1d1540" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  }
+  const mouth = (mood === 'sleepy' || mood === 'waiting') ? '' : smile;
+  const eyesFinal = (mood === 'sleepy') ? '' : eyes;
+  return `
+    <svg class="cloud" viewBox="0 0 180 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="cloudclip"><ellipse cx="90" cy="85" rx="68" ry="42"/></clipPath>
+        <radialGradient id="cloudg" cx="40%" cy="40%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#e9dffc"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="50"  cy="80"  rx="26" ry="24" fill="url(#cloudg)"/>
+      <ellipse cx="80"  cy="68"  rx="34" ry="28" fill="url(#cloudg)"/>
+      <ellipse cx="118" cy="74"  rx="30" ry="26" fill="url(#cloudg)"/>
+      <ellipse cx="140" cy="88"  rx="22" ry="20" fill="url(#cloudg)"/>
+      <ellipse cx="90"  cy="100" rx="50" ry="22" fill="url(#cloudg)"/>
+      ${over}${eyesFinal}${mouth}${blush}
+    </svg>`;
+}
+
+/* ===================== CONSTELLATION ===================== */
+function constellationSVG(){
+  const logs = state.logs.slice().reverse();
+  if (!logs.length) return '<div class="cons-empty">🌌 Созвездие появится, когда ты запишешь первую ночь</div>';
+  const W = 360, H = 180;
+  function hash(str){ let h = 0; for (let i=0;i<str.length;i++) { h = ((h<<5) - h) + str.charCodeAt(i); h |= 0; } return Math.abs(h); }
+  const stars = logs.map((l, i) => {
+    const hx = hash(l.id + 'x'), hy = hash(l.id + 'y');
+    const x = 30 + (hx % (W - 60));
+    const y = 25 + (hy % (H - 50));
+    const size = l.quality === 3 ? 4 : l.quality === 2 ? 3 : 2.2;
+    const glow = l.duration >= 540 ? 1 : 0;
+    return { x, y, size, glow, i, q: l.quality };
+  });
+  const lines = [];
+  for (let i = 1; i < stars.length; i++) {
+    const a = stars[i-1], b = stars[i];
+    lines.push(`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(255,255,255,.18)" stroke-width="0.8"/>`);
+  }
+  const starsSvg = stars.map(s => {
+    const color = s.q === 3 ? '#ffd166' : s.q === 2 ? '#c2b1ed' : '#8a7bb0';
+    const glowRing = s.glow ? `<circle cx="${s.x}" cy="${s.y}" r="${s.size+4}" fill="none" stroke="${color}" stroke-width=".5" opacity=".3"/>` : '';
+    return `${glowRing}<circle cx="${s.x}" cy="${s.y}" r="${s.size}" fill="${color}"><animate attributeName="opacity" values="0.6;1;0.6" dur="${2+s.i%3}s" repeatCount="indefinite"/></circle>`;
+  }).join('');
+  const name = state.name || 'твоё';
+  return `
+    <svg class="cons-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      ${lines.join('')}${starsSvg}
+    </svg>
+    <div class="cons-caption">Созвездие ${name==='твоё'?'твоё':('«'+name+'»')} · ${stars.length} ${stars.length===1?'ночь':(stars.length<5?'ночи':'ночей')}</div>`;
+}
+
+/* ===================== LEVEL & ACHIEVEMENT CHECK ===================== */
+function levelProgress(){
+  return LEVELS.map(lvl => {
+    const cur = lvl.check(state.logs);
+    const done = cur >= lvl.goal;
+    return { ...lvl, cur: Math.min(cur, lvl.goal), done };
+  });
+}
+function checkLevelUps(){
+  const newly = [];
+  levelProgress().forEach(lvl => {
+    if (lvl.done && !state.unlockedLevels.includes(lvl.id)) {
+      state.unlockedLevels.push(lvl.id);
+      state.stars += lvl.reward;
+      newly.push(lvl);
+    }
+  });
+  return newly;
+}
+function checkAchievements(){
+  const newly = [];
+  ACHIEVEMENTS.forEach(ach => {
+    if (ach.check(state) && !state.unlockedAchievements.includes(ach.id)) {
+      state.unlockedAchievements.push(ach.id);
+      state.stars += 5;
+      newly.push(ach);
+    }
+  });
+  return newly;
+}
+
+/* ===================== PLAYER LEVEL (from stars) ===================== */
+// every 50 stars = +1 player level
+function playerLevel(){
+  const l = Math.floor(state.stars / 50) + 1;
+  const cur = state.stars % 50;
+  return { level: l, cur, max: 50, pct: Math.round(cur / 50 * 100) };
+}
+
+/* ===================== DAILY LOGIN BONUS ===================== */
+function checkDailyBonus(){
+  const t = todayISO();
+  if (state.lastDailyBonus !== t) {
+    state.lastDailyBonus = t;
+    state.stars += 5;
+    save();
+    showBonus('🎁 +5 ⭐ за вход сегодня!');
+  }
+}
+
+/* ===================== RENDER STATE ===================== */
+let localUi = {
+  tab: 'home',           // home|tips|progress|quiz
+  step: null,            // quality|dream|null
+  pickedQuality: null,
+  pickedDream: null,
+  quizRun: null,         // {idx, score, answered, selectedIdx, timerId, remaining}
+};
+
+/* ===================== MAIN RENDER ===================== */
+function render(){
+  const root = document.getElementById('app');
+  const stars = state.stars;
+  const streak = computeStreak(state.logs);
+
+  const tabBody =
+    localUi.tab === 'home'     ? renderHome() :
+    localUi.tab === 'tips'     ? renderTips() :
+    localUi.tab === 'progress' ? renderProgress() :
+    localUi.tab === 'quiz'     ? renderQuiz() :
+    '';
+
+  root.innerHTML = `
+    <div class="top">
+      <div class="logo"><span class="moon">🌙</span> СоноТрекер</div>
+      <div class="spacer"></div>
+      <div class="chip star">⭐ ${stars}</div>
+      <div class="chip fire">🔥 ${streak}</div>
+      <button class="icon-btn" onclick="SONO.openSettings()" title="Настройки">⚙︎</button>
+    </div>
+
+    ${tabBody}
+
+    <div class="tabs">
+      <button class="${localUi.tab==='home'     ? 'active':''}" onclick="SONO.setTab('home')"    ><span class="ico">🏠</span><span>Дом</span></button>
+      <button class="${localUi.tab==='tips'     ? 'active':''}" onclick="SONO.setTab('tips')"    ><span class="ico">💡</span><span>Советы</span></button>
+      <button class="${localUi.tab==='progress' ? 'active':''}" onclick="SONO.setTab('progress')"><span class="ico">📊</span><span>Прогресс</span></button>
+      <button class="${localUi.tab==='quiz'     ? 'active':''}" onclick="SONO.setTab('quiz')"    ><span class="ico">🧠</span><span>Викторина</span></button>
+    </div>
+  `;
+}
+
+/* ===================== HOME TAB ===================== */
+function renderHome(){
+  const name = state.name || 'друг';
+  const mood = cloudMood();
+  const logs = state.logs;
+  const isPending = !!state.pending;
+  const today = logs.find(l => l.date === todayISO());
+  const now = new Date();
+  const mainBtnHtml = localUi.step ? '' :
+    isPending
+      ? `<button class="main-btn morning" onclick="SONO.startMorning()">
+          <span class="emo">☀️</span><span>Доброе утро, ${name}!</span>
+        </button>
+        <div class="main-btn-hint">Расскажи как спалось ✨</div>`
+      : today
+        ? `<button class="main-btn morning" onclick="SONO.startMorning(true)" style="background:linear-gradient(135deg,#a0d8bf,#5cbd9e);color:#0d3b2c">
+            <span class="emo">✅</span><span>Сон записан!</span>
+          </button>
+          <div class="main-btn-hint">Нажми, чтобы поменять данные</div>`
+        : `<button class="main-btn night" onclick="SONO.goNight()">
+            <span class="emo">🌙</span><span>Спокойной ночи, ${name}!</span>
+          </button>
+          <div class="main-btn-hint">${now.getHours() >= 20 ? 'Нажми прямо перед сном' : 'Нажмёшь вечером, перед сном'}</div>`;
+
+  const stepHtml = renderFlow();
+
+  const levels = levelProgress();
+  const levelsHtml = levels.map(l => {
+    const pct = Math.round(l.cur / l.goal * 100);
+    const activeLevel = levels.find(x => !x.done);
+    const cls = l.done ? 'done' : (activeLevel && activeLevel.id < l.id ? 'locked' : '');
+    return `
+      <div class="lvl-card ${cls}">
+        <div class="lvl-icon">${l.icon}</div>
+        <div class="lvl-num">УРОВЕНЬ ${l.id}</div>
+        <div class="lvl-name">${l.name}</div>
+        <div class="lvl-desc">${l.desc}</div>
+        <div class="lvl-bar"><div class="lvl-bar-fill" style="width:${pct}%"></div></div>
+        <div class="lvl-foot">
+          <span>${l.cur} / ${l.goal}</span>
+          <span class="reward">⭐ ${l.reward}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="hero">
+      <div class="greet">Привет, <span class="name">${name}</span>!</div>
+      <div class="cloud-wrap">
+        ${cloudSVG(mood.key)}
+        ${mood.msg ? `<div class="cloud-msg">${mood.msg}</div>` : ''}
+      </div>
+      <div class="title-row">
+        ${
+          localUi.step === 'quality' ? '<div class="big">Как ты спал?</div><div class="small">Выбери смайлик</div>' :
+          localUi.step === 'dream'   ? '<div class="big">Что тебе снилось?</div><div class="small">Или выбери «не помню»</div>' :
+          isPending                  ? '<div class="big">Уже утро!</div><div class="small">Расскажи, как спалось</div>' :
+          today                      ? '<div class="big">Молодец ⭐</div><div class="small">Ты сегодня уже записал сон</div>' :
+                                       '<div class="big">Готов ко сну?</div><div class="small">Нажми вечером — и утром</div>'
+        }
+      </div>
+      ${stepHtml || mainBtnHtml}
+    </div>
+
+    ${(() => {
+      const wc = challengeProgress();
+      const pct = Math.round(wc.cur / wc.goal * 100);
+      return `
+        <div class="wc-card ${wc.done?'wc-done':''}">
+          <div class="wc-label">⚡ Вызов недели</div>
+          <div class="wc-main">
+            <div class="wc-icon">${wc.ch.icon}</div>
+            <div class="wc-body">
+              <div class="wc-title">${wc.ch.title}</div>
+              <div class="wc-desc">${wc.ch.desc}</div>
+              <div class="wc-bar"><div class="wc-bar-fill" style="width:${pct}%"></div></div>
+              <div class="wc-foot">
+                <span>${wc.cur} / ${wc.goal}</span>
+                <span class="wc-reward">${wc.done?(wc.claimed?'✓ получено':'✨ готово!'):'⭐ '+wc.ch.reward}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    })()}
+
+    <div class="section">
+      <div class="section-h">
+        <h2>🏆 Твои уровни</h2>
+        <span class="hint">прокрути →</span>
+      </div>
+      <div class="levels-scroll">${levelsHtml}</div>
+    </div>
+  `;
+}
+
+function renderFlow(){
+  if (!localUi.step) return '';
+  if (localUi.step === 'quality'){
+    const opts = QUALITIES.map(q => `
+      <button class="picker-btn ${localUi.pickedQuality === q.id ? 'on':''}" onclick="SONO.pickQuality(${q.id})">
+        <span class="big">${q.emoji}</span><span>${q.label}</span>
+      </button>`).join('');
+    let dur = '';
+    if (state.pending){
+      const s = new Date(state.pending.sleepAt);
+      const w = new Date();
+      const min = Math.max(1, Math.round((w - s) / 60000));
+      dur = `<div class="duration-show">Ты спал <span class="d">${fmtDur(min)}</span></div>`;
+    }
+    return `<div class="flow-step">
+      ${dur}
+      <div class="picker-row">${opts}</div>
+      <div class="flow-actions">
+        <button class="back" onclick="SONO.cancelFlow()">Назад</button>
+        <button class="save" onclick="SONO.goNextStep()" ${localUi.pickedQuality ? '' : 'disabled style="opacity:.5"'}>Дальше →</button>
+      </div>
+    </div>`;
+  }
+  if (localUi.step === 'dream'){
+    const opts = DREAMS.map(d => `
+      <button class="picker-btn ${localUi.pickedDream === d.id ? 'on':''}" onclick="SONO.pickDream('${d.id}')">
+        <span class="big">${d.emoji}</span><span>${d.label}</span>
+      </button>`).join('');
+    return `<div class="flow-step">
+      <div class="picker-row">${opts}</div>
+      <div class="flow-actions">
+        <button class="back" onclick="SONO.backStep()">← Назад</button>
+        <button class="save" onclick="SONO.saveLog()" ${localUi.pickedDream ? '' : 'disabled style="opacity:.5"'}>Сохранить ⭐</button>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+/* ===================== TIPS TAB ===================== */
+function renderTips(){
+  const today = todayISO();
+  const canClaim = state.lastTipClaim !== today;
+  const unlocked = state.unlockedTips;
+  const total = TIPS.length;
+  const gridHtml = TIPS.map(t => {
+    const isLocked = !unlocked.includes(t.id);
+    if (isLocked) {
+      return `<div class="tip-card locked"><div class="tip-icon">🔒</div><div class="tip-title">???</div><div class="tip-rarity">скрыто</div></div>`;
+    }
+    return `<div class="tip-card ${t.rarity}" onclick="SONO.showTip('${t.id}')">
+      <div class="tip-icon">${t.icon}</div>
+      <div class="tip-title">${t.title}</div>
+      <div class="tip-rarity">${rarityLabel(t.rarity)}</div>
+    </div>`;
+  }).join('');
+
+  // videos
+  const videosHtml = VIDEOS.length
+    ? VIDEOS.map(v => `
+        <div class="video-card">
+          <h4>📺 ${v.title}</h4>
+          <div class="video-iframe-wrap">
+            <iframe src="${v.url}" allow="autoplay; encrypted-media; fullscreen" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>`).join('')
+    : `<div class="video-card">
+        <h4>📺 Видео о сне</h4>
+        <div class="video-placeholder">
+          🎬 Скоро тут появятся ролики из VK<br>
+          <span style="font-size:11px;opacity:.7">Их подберёт Павел Дмитриевич</span>
+        </div>
+      </div>`;
+
+  return `
+    <div class="tip-hero">
+      <h2>🎴 Карточки советов</h2>
+      <div class="tip-sub">Каждый день — новая карточка в твою коллекцию!</div>
+      <button class="tip-claim-btn" onclick="SONO.claimDailyTip()" ${canClaim ? '' : 'disabled'}>
+        ${canClaim ? '✨ Открыть карточку дня' : '✓ Сегодня уже открыл'}
+      </button>
+      <div class="tip-progress">Собрано: ${unlocked.length} / ${total}</div>
+    </div>
+    <div class="cards-grid">${gridHtml}</div>
+    <div class="section">
+      <div class="section-h"><h2>🎬 Видео о сне</h2></div>
+      ${videosHtml}
+    </div>
+  `;
+}
+function rarityLabel(r){
+  return { common:'Обычная', rare:'Редкая', epic:'Эпичная', legendary:'Легенда' }[r] || '';
+}
+
+/* ===================== PROGRESS TAB ===================== */
+function renderProgress(){
+  const p = playerLevel();
+  const logs = state.logs;
+  // records
+  const bestStreak = calcBestStreak(logs);
+  const longest = logs.reduce((m, l) => Math.max(m, l.duration), 0);
+  const avgDur = logs.length ? Math.round(logs.reduce((s,l)=>s+l.duration,0) / logs.length) : 0;
+  const goodNights = logs.filter(l => l.quality === 3).length;
+
+  // heatmap (last 28 days = 2 rows of 14)
+  const days = 28;
+  const dateMap = {};
+  logs.forEach(l => { dateMap[l.date] = l; });
+  const cells = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = days-1; i >= 0; i--) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const iso = d.toISOString().slice(0,10);
+    const l = dateMap[iso];
+    const q = l ? l.quality : 0;
+    const isToday = iso === todayISO();
+    cells.push(`<div class="heatmap-cell ${q===1?'q1':q===2?'q2':q===3?'q3':''} ${isToday?'today':''}" title="${iso}${l?' — '+fmtDur(l.duration):''}"></div>`);
+  }
+
+  // achievements
+  const achHtml = ACHIEVEMENTS.map(a => {
+    const got = state.unlockedAchievements.includes(a.id);
+    return `<div class="ach-card ${got?'got':'locked'}" onclick="SONO.showAch('${a.id}')" title="${a.name}">
+      <div class="ach-icon">${got ? a.icon : '🔒'}</div>
+      <div class="ach-label">${got ? a.name : '???'}</div>
+    </div>`;
+  }).join('');
+
+  // recent history
+  const historyHtml = logs.slice(0, 5).map(l => `
+    <div class="log-card">
+      <div class="log-emoji">${dreamEmoji(l.dream)}</div>
+      <div class="log-main">
+        <div class="log-date">${fmtDate(l.date)}</div>
+        <div class="log-dur">${fmtDur(l.duration)}</div>
+        <div class="log-time">🌙 ${fmtTime(l.sleepAt)} → ☀️ ${fmtTime(l.wakeAt)}</div>
+      </div>
+      <div class="log-quality">${qualEmoji(l.quality)}</div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="stat-hero">
+      <div class="player-lvl">ТВОЙ УРОВЕНЬ ИГРОКА</div>
+      <div class="player-lvl-num">${p.level}</div>
+      <div class="player-xp-bar"><div class="player-xp-bar-fill" style="width:${p.pct}%"></div></div>
+      <div class="player-xp-text">${p.cur} / ${p.max} ⭐ до следующего уровня</div>
+    </div>
+    <div class="records-row">
+      <div class="record-card">
+        <div class="r-label">🔥 Лучший streak</div>
+        <div class="r-value">${bestStreak} ${bestStreak===1?'день':bestStreak<5?'дня':'дней'}</div>
+      </div>
+      <div class="record-card">
+        <div class="r-label">💤 Самый долгий сон</div>
+        <div class="r-value">${longest ? fmtDur(longest) : '—'}</div>
+      </div>
+      <div class="record-card">
+        <div class="r-label">📊 В среднем</div>
+        <div class="r-value">${avgDur ? fmtDur(avgDur) : '—'}</div>
+      </div>
+      <div class="record-card">
+        <div class="r-label">😊 Супер-ночей</div>
+        <div class="r-value">${goodNights}</div>
+      </div>
+    </div>
+
+    <div class="heatmap-card">
+      <div class="heatmap-title">📅 Последние 4 недели</div>
+      <div class="heatmap-grid">${cells.join('')}</div>
+      <div class="heatmap-legend">
+        <span>меньше</span>
+        <span class="sw" style="background:#f0ebf9"></span>
+        <span class="sw" style="background:#ffe4c2"></span>
+        <span class="sw" style="background:#ffd166"></span>
+        <span class="sw" style="background:#5cbd9e"></span>
+        <span>больше</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">
+        <h2>✨ Созвездие снов</h2>
+      </div>
+      <div class="constellation-card">
+        <div class="cons-title">
+          <span>каждая ночь = звезда</span>
+          <span class="count">${logs.length} ${logs.length===1?'ночь':logs.length<5?'ночи':'ночей'}</span>
+        </div>
+        ${constellationSVG()}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">
+        <h2>🏅 Достижения</h2>
+        <span class="hint">${state.unlockedAchievements.length} / ${ACHIEVEMENTS.length}</span>
+      </div>
+      <div class="ach-grid">${achHtml}</div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">
+        <h2>📖 История</h2>
+        ${logs.length > 5 ? '<span class="hint">последние 5</span>' : ''}
+      </div>
+      ${logs.length ? `<div class="history-list">${historyHtml}</div>` : `<div class="empty-state">Пока пусто — запиши свою первую ночь 🌙</div>`}
+    </div>
+  `;
+}
+function calcBestStreak(logs){
+  if (!logs.length) return 0;
+  const dates = [...new Set(logs.map(l => l.date))].sort();
+  let best = 1, cur = 1;
+  for (let i = 1; i < dates.length; i++) {
+    const a = new Date(dates[i-1]), b = new Date(dates[i]);
+    const diff = Math.round((b - a) / 86400000);
+    if (diff === 1) { cur++; best = Math.max(best, cur); }
+    else cur = 1;
+  }
+  return best;
+}
+
+/* ===================== QUIZ TAB ===================== */
+function renderQuiz(){
+  const run = localUi.quizRun;
+  if (!run) {
+    return `
+      <div class="quiz-hero">
+        <h2>🧠 Викторина о сне</h2>
+        <div class="sub">10 вопросов из ${QUIZ.length} случайных · +2 ⭐ за верный ответ</div>
+        <div class="best">🏆 Рекорд: ${state.quizHighScore} / 10 · попыток: ${state.quizAttempts}</div><br>
+        <button class="quiz-start-btn" onclick="SONO.startQuiz()">Начать викторину</button>
+      </div>
+    `;
+  }
+  if (run.finished) {
+    const score = run.score;
+    const total = run.total;
+    let emoji, title, sub;
+    if (score === total)          { emoji = '🏆'; title = 'ГЕНИЙ СНА!';    sub = 'Ты знаешь всё о сне!'; }
+    else if (score >= total*0.8)  { emoji = '🌟'; title = 'Знаток сна';    sub = 'Отличный результат — почти идеально'; }
+    else if (score >= total*0.5)  { emoji = '😊'; title = 'Неплохо!';      sub = 'Пробуй ещё — станешь экспертом'; }
+    else                          { emoji = '🤓'; title = 'Нужно читать'; sub = 'Загляни в «Советы» — там всё про сон'; }
+    return `
+      <div class="quiz-result">
+        <div class="score-emoji">${emoji}</div>
+        <div class="score-num">${score} / ${total}</div>
+        <div class="score-title">${title}</div>
+        <div class="score-sub">${sub}</div>
+        <div style="font-size:12px;color:var(--ink-mute);margin-bottom:12px">+${score*2} ⭐ в копилку</div>
+        <button class="retry-btn" onclick="SONO.startQuiz()">Ещё раз →</button>
+      </div>
+    `;
+  }
+  const q = QUIZ[run.order[run.idx]];
+  const opts = q.opts.map((opt, i) => {
+    let cls = 'quiz-opt';
+    if (run.answered) {
+      if (i === q.correct) cls += ' ok';
+      else if (i === run.selectedIdx) cls += ' wrong';
+    }
+    return `<button class="${cls}" ${run.answered?'disabled':''} onclick="SONO.answerQuiz(${i})">${String.fromCharCode(65+i)}. ${opt}</button>`;
+  }).join('');
+  const low = run.remaining <= 5;
+  return `
+    <div class="quiz-card">
+      <div class="quiz-progress">
+        <span>Вопрос ${run.idx+1} / ${run.total} · ${run.score} ⭐</span>
+        <span class="timer ${low?'low':''}">${run.remaining}с</span>
+      </div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts">${opts}</div>
+      ${run.answered ? `<div style="text-align:center;margin-top:12px"><button class="retry-btn" style="padding:10px 20px;border-radius:999px;background:linear-gradient(135deg,var(--lav),var(--lav-d));color:#fff;font-weight:900" onclick="SONO.nextQuiz()">${run.idx===run.total-1?'Показать результат':'Следующий →'}</button></div>` : ''}
+    </div>
+  `;
+}
+
+/* ===================== ACTIONS ===================== */
+window.SONO = {
+  setTab(tab){
+    // stop quiz timer if leaving
+    if (localUi.tab === 'quiz' && tab !== 'quiz' && localUi.quizRun) {
+      if (localUi.quizRun.timerId) clearInterval(localUi.quizRun.timerId);
+      localUi.quizRun = null;
+    }
+    localUi.tab = tab;
+    render();
+    try { window.scrollTo({top: 0, behavior: 'smooth'}); } catch(e){}
+  },
+  goNight(){
+    state.pending = { sleepAt: new Date().toISOString() };
+    save();
+    confetti(['#8b6fd4','#c2b1ed','#ffd166']);
+    render();
+  },
+  startMorning(isEdit){
+    if (isEdit) {
+      const today = state.logs.find(l => l.date === todayISO());
+      if (today) {
+        state.pending = { sleepAt: today.sleepAt };
+        state.logs = state.logs.filter(l => l.id !== today.id);
+        save();
+      }
+    }
+    localUi.step = 'quality'; localUi.pickedQuality = null; localUi.pickedDream = null;
+    render();
+  },
+  pickQuality(q){ localUi.pickedQuality = q; render(); },
+  pickDream(d){ localUi.pickedDream = d; render(); },
+  goNextStep(){ if (!localUi.pickedQuality) return; localUi.step = 'dream'; render(); },
+  backStep(){ localUi.step = 'quality'; render(); },
+  cancelFlow(){ localUi.step = null; localUi.pickedQuality = null; localUi.pickedDream = null; render(); },
+  saveLog(){
+    if (!localUi.pickedQuality || !localUi.pickedDream) return;
+    if (!state.pending) return;
+    const sleepAt = state.pending.sleepAt;
+    const wakeAt  = new Date().toISOString();
+    const duration = Math.max(1, Math.round((new Date(wakeAt) - new Date(sleepAt)) / 60000));
+    const log = {
+      id: 'l_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+      date: todayISO(),
+      sleepAt, wakeAt,
+      quality: localUi.pickedQuality,
+      dream: localUi.pickedDream,
+      duration,
+    };
+    state.logs.unshift(log);
+    state.pending = null;
+    state.stars += 5;
+    // extra: record before 08:00 → +3
+    if (hourOfLocal(wakeAt) < 8) { state.stars += 3; showBonus('🐦 +3 ⭐ за ранний подъём!'); }
+    save();
+    const newLvls = checkLevelUps();
+    const newAchs = checkAchievements();
+    const wcDone  = checkWeeklyChallenge();
+    save();
+    localUi.step = null; localUi.pickedQuality = null; localUi.pickedDream = null;
+    render();
+    confetti(['#ffd166','#8fd6bd','#ffb0c8','#8b6fd4']);
+    if (wcDone) {
+      setTimeout(() => { showBonus('⚡ Вызов недели выполнен! +' + wcDone.reward + ' ⭐'); confetti(['#ff9a6a','#ffd166','#ffb0c8']); }, 400);
+    } else if (newLvls.length) setTimeout(() => showLevelToast(newLvls[0], 'УРОВЕНЬ!'), 400);
+    else if (newAchs.length)   setTimeout(() => showLevelToast(newAchs[0], 'АЧИВКА!'), 400);
+  },
+
+  /* Tip actions */
+  claimDailyTip(){
+    const today = todayISO();
+    if (state.lastTipClaim === today) return;
+    const locked = TIPS.filter(t => !state.unlockedTips.includes(t.id));
+    if (!locked.length) {
+      state.lastTipClaim = today;
+      save();
+      showBonus('🏆 Вся коллекция собрана!');
+      return;
+    }
+    // weighted random: legendary 5%, epic 15%, rare 30%, common 50%
+    const rarityWeights = { common: 50, rare: 30, epic: 15, legendary: 5 };
+    const pool = [];
+    locked.forEach(t => {
+      for (let i = 0; i < rarityWeights[t.rarity]; i++) pool.push(t);
+    });
+    const pick = pool[Math.floor(Math.random() * pool.length)] || locked[0];
+    state.unlockedTips.push(pick.id);
+    state.lastTipClaim = today;
+    state.stars += (pick.rarity === 'legendary' ? 25 : pick.rarity === 'epic' ? 15 : pick.rarity === 'rare' ? 8 : 3);
+    save();
+    const achs = checkAchievements(); save();
+    showTipReveal(pick);
+    if (achs.length) setTimeout(() => showLevelToast(achs[0], 'АЧИВКА!'), 1200);
+  },
+  showTip(id){
+    const t = TIPS.find(x => x.id === id);
+    if (!t) return;
+    showTipReveal(t, true);
+  },
+
+  /* Achievement peek */
+  showAch(id){
+    const a = ACHIEVEMENTS.find(x => x.id === id);
+    if (!a) return;
+    const got = state.unlockedAchievements.includes(id);
+    const html = `
+      <button class="modal-close" onclick="document.querySelector('.modal-bg').remove()">✕</button>
+      <div style="text-align:center">
+        <div style="font-size:70px;margin-bottom:6px;${got?'':'filter:grayscale(1);opacity:.4'}">${a.icon}</div>
+        <h2>${got ? a.name : 'Пока закрыта'}</h2>
+        <p>${a.desc}</p>
+        ${got ? '<p style="color:var(--mint-d);font-weight:800">✓ Получена!</p>' : ''}
+      </div>
+    `;
+    openModal(html);
+  },
+
+  /* Quiz actions */
+  startQuiz(){
+    const total = Math.min(10, QUIZ.length);
+    const order = [...Array(QUIZ.length).keys()].sort(()=>Math.random()-0.5).slice(0, total);
+    localUi.quizRun = { idx: 0, score: 0, answered: false, selectedIdx: null, timerId: null, remaining: 15, order, total };
+    startQuizTimer();
+    render();
+  },
+  answerQuiz(i){
+    const r = localUi.quizRun;
+    if (!r || r.answered) return;
+    r.answered = true;
+    r.selectedIdx = i;
+    if (r.timerId) clearInterval(r.timerId);
+    const q = QUIZ[r.order[r.idx]];
+    if (i === q.correct) {
+      r.score++;
+      state.stars += 2;
+      save();
+    }
+    render();
+  },
+  nextQuiz(){
+    const r = localUi.quizRun;
+    if (!r) return;
+    r.idx++;
+    if (r.idx >= r.total) {
+      r.finished = true;
+      state.quizAttempts++;
+      if (r.score > state.quizHighScore) state.quizHighScore = r.score;
+      save();
+      const achs = checkAchievements(); save();
+      render();
+      if (r.score >= 8) confetti(['#ffd166','#8fd6bd','#ffb0c8']);
+      if (achs.length) setTimeout(() => showLevelToast(achs[0], 'АЧИВКА!'), 500);
+      return;
+    }
+    r.answered = false; r.selectedIdx = null; r.remaining = 15;
+    startQuizTimer();
+    render();
+  },
+
+  openSettings(){
+    const html = `
+      <button class="modal-close" onclick="document.querySelector('.modal-bg').remove()">✕</button>
+      <h2>⚙️ Настройки</h2>
+      <p>Небольшие штуки, чтобы приложение было твоим</p>
+      <div class="settings-row">
+        <label>Как тебя звать?</label>
+        <input id="nm-in" type="text" placeholder="например, Арина" value="${(state.name||'').replace(/"/g,'&quot;')}" maxlength="20"/>
+      </div>
+      <div class="settings-row">
+        <label>Сброс всего</label>
+        <button onclick="SONO.resetAll()" style="background:#ffe0e0;color:#c92a47;font-weight:800;padding:8px 14px;border-radius:12px;font-size:13px">Сбросить</button>
+      </div>
+      <div style="margin-top:14px;text-align:center">
+        <button onclick="SONO.saveName()" style="background:linear-gradient(135deg,var(--lav),var(--lav-d));color:#fff;font-weight:900;padding:10px 22px;border-radius:14px;font-size:14px;border:none">Сохранить</button>
+      </div>
+      <p style="font-size:11px;color:var(--ink-mute);margin-top:14px;text-align:center">v2 · Савкина А. Д., Воронова Д. М. · Рук. Неумоин П. Д. · ГБОУ Школа 2200</p>
+    `;
+    openModal(html);
+    setTimeout(() => { const i = document.getElementById('nm-in'); if (i) i.focus(); }, 30);
+  },
+  saveName(){
+    const inp = document.getElementById('nm-in');
+    if (inp) { state.name = inp.value.trim().slice(0, 20); save(); }
+    const bg = document.querySelector('.modal-bg'); if (bg) bg.remove();
+    render();
+  },
+  resetAll(){
+    if (!confirm('Точно всё стереть? Звёзды, записи, уровни, ачивки, советы — всё.')) return;
+    state = { ...defaultState };
+    save();
+    const bg = document.querySelector('.modal-bg'); if (bg) bg.remove();
+    render();
+  },
+};
+
+/* ===================== QUIZ TIMER ===================== */
+function startQuizTimer(){
+  const r = localUi.quizRun;
+  if (!r) return;
+  if (r.timerId) clearInterval(r.timerId);
+  r.remaining = 15;
+  r.timerId = setInterval(() => {
+    if (!localUi.quizRun || localUi.quizRun.answered) {
+      clearInterval(r.timerId); return;
+    }
+    localUi.quizRun.remaining--;
+    if (localUi.quizRun.remaining <= 0) {
+      clearInterval(localUi.quizRun.timerId);
+      SONO.answerQuiz(-1); // out of time
+      return;
+    }
+    // minimal update: just timer text
+    const t = document.querySelector('.quiz-progress .timer');
+    if (t) {
+      t.textContent = localUi.quizRun.remaining + 'с';
+      t.classList.toggle('low', localUi.quizRun.remaining <= 5);
+    }
+  }, 1000);
+}
+
+/* ===================== MODALS / FX ===================== */
+function openModal(html){
+  const prev = document.querySelector('.modal-bg'); if (prev) prev.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'modal-bg';
+  wrap.innerHTML = '<div class="modal">' + html + '</div>';
+  wrap.addEventListener('click', (e) => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+function confetti(colors){
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti';
+  const n = 26;
+  for (let i = 0; i < n; i++){
+    const s = document.createElement('span');
+    s.style.left = (Math.random()*100) + '%';
+    s.style.background = colors[i % colors.length];
+    s.style.animationDuration = (1.1 + Math.random()*1.2) + 's';
+    s.style.animationDelay = (Math.random()*.3) + 's';
+    s.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+    s.style.borderRadius = (Math.random() > .5) ? '50%' : '2px';
+    wrap.appendChild(s);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 2200);
+}
+function showLevelToast(lvl, label){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `
+    <span class="big">${lvl.icon}</span>
+    <div class="t1">${label || 'НОВЫЙ УРОВЕНЬ!'}</div>
+    <div class="t2">${lvl.name}</div>
+    <div class="t3">${lvl.reward ? ('+'+lvl.reward+' звёздочек') : '+5 звёздочек'}</div>
+    <button onclick="this.parentElement.remove()">Класс! 🎉</button>
+  `;
+  document.body.appendChild(t);
+  confetti(['#ffd166','#ff9a6a','#ffb0c8','#c2b1ed']);
+  setTimeout(() => t.remove(), 7000);
+}
+function showBonus(text){
+  const prev = document.querySelector('.bonus-pop'); if (prev) prev.remove();
+  const el = document.createElement('div');
+  el.className = 'bonus-pop';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+function showTipReveal(tip, isJustView){
+  const prev = document.querySelector('.reveal-bg'); if (prev) prev.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'reveal-bg';
+  const sparks = [];
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2;
+    const dist = 100 + Math.random() * 40;
+    sparks.push(`<span style="top:50%;left:50%;--dx:${Math.cos(ang)*dist}px;--dy:${Math.sin(ang)*dist}px;animation-delay:${i*.05}s">✨</span>`);
+  }
+  wrap.innerHTML = `
+    <div class="reveal-card ${tip.rarity}">
+      <div class="reveal-sparks">${sparks.join('')}</div>
+      <div class="icn">${tip.icon}</div>
+      <div class="rarity-tag">${rarityLabel(tip.rarity)}${isJustView?'':' · НОВАЯ!'}</div>
+      <h3>${tip.title}</h3>
+      <div class="body">${tip.body}</div>
+      <button class="close-btn" onclick="document.querySelector('.reveal-bg').remove()">${isJustView?'Понятно':'Здорово! 🌟'}</button>
+    </div>
+  `;
+  wrap.addEventListener('click', (e) => { if (e.target === wrap) wrap.remove(); });
+  document.body.appendChild(wrap);
+}
+
+/* ===================== BOOT ===================== */
+checkDailyBonus();
+render();
+// Ask name gently on first open
+if (!state.name && state.logs.length === 0) {
+  setTimeout(() => SONO.openSettings(), 600);
+}
+
+})();
+</script>
+</body>
+</html>
